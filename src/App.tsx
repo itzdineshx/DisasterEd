@@ -22,6 +22,9 @@ import NotFound from "./pages/NotFound";
 import RealTimeAlerts from "./pages/RealTimeAlerts";
 import GeoLocationTips from "./pages/GeoLocationTips";
 import LiveCommunication from "./pages/LiveCommunication";
+import OfficerDashboard from "./pages/OfficerDashboard";
+import Profile from "./pages/Profile";
+import Notifications from "./pages/Notifications";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +54,11 @@ const App = () => (
               <TeacherDashboard />
             </ProtectedRoute>
           } />
+          <Route path="/officer-dashboard" element={
+            <ProtectedRoute requiredRole="officer">
+              <OfficerDashboard />
+            </ProtectedRoute>
+          } />
           <Route path="/progress-analytics" element={
             <ProtectedRoute>
               <ProgressAnalytics />
@@ -75,6 +83,16 @@ const App = () => (
           <Route path="/real-time-alerts" element={<RealTimeAlerts />} />
           <Route path="/geo-location-tips" element={<GeoLocationTips />} />
           <Route path="/live-communication" element={<LiveCommunication />} />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
+          <Route path="/notifications" element={
+            <ProtectedRoute>
+              <Notifications />
+            </ProtectedRoute>
+          } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

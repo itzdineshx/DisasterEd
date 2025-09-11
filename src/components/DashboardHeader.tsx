@@ -1,4 +1,4 @@
-import { Shield, Bell, User, LogOut } from "lucide-react";
+import { Shield, User, LogOut, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,6 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
+import { NotificationCenter } from "@/components/NotificationCenter";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface DashboardHeaderProps {
   title: string;
@@ -17,6 +19,7 @@ interface DashboardHeaderProps {
 }
 
 export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderProps) => {
+  const { user, logout } = useAuth();
   const getRoleColor = (role: string) => {
     switch (role) {
       case "student": return "primary";
@@ -79,15 +82,7 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
           {/* User Actions */}
           <div className="flex items-center space-x-4">
             {/* Notifications */}
-            <Button variant="ghost" size="sm" className="relative">
-              <Bell className="h-5 w-5" />
-              <Badge 
-                variant="destructive" 
-                className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
-              >
-                2
-              </Badge>
-            </Button>
+            <NotificationCenter />
 
             {/* User Menu */}
             <DropdownMenu>
@@ -97,7 +92,7 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
                     <User className={`h-4 w-4 text-${getRoleColor(userRole)}`} />
                   </div>
                   <div className="hidden sm:block text-left">
-                    <div className="text-sm font-medium">John Doe</div>
+                    <div className="text-sm font-medium">{user?.firstName} {user?.lastName}</div>
                     <div className="text-xs text-muted-foreground">{getRoleLabel(userRole)}</div>
                   </div>
                 </Button>
@@ -122,11 +117,9 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
                     Switch Role
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/">
-                    <LogOut className="h-4 w-4 mr-2" />
-                    Sign Out
-                  </Link>
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

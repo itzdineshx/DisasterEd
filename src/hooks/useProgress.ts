@@ -117,6 +117,9 @@ export const useProgress = () => {
     };
     
     saveProgress(updatedProgress);
+    
+    // Check for milestone badges
+    checkMilestoneBadges(updatedProgress);
   };
 
   const addQuizResult = (result: QuizResult) => {
@@ -203,6 +206,71 @@ export const useProgress = () => {
         icon: '🛡️',
         earnedAt: '',
         category: 'safety'
+      });
+    }
+  };
+
+  const checkMilestoneBadges = (progress: Record<string, ModuleProgress>) => {
+    const completedModules = Object.values(progress).filter(mp => mp.status === 'completed').length;
+    const overallProgress = getOverallProgress();
+    
+    // First Module badge
+    if (completedModules >= 1) {
+      awardBadge({
+        id: 'first-module',
+        name: 'Getting Started',
+        description: 'Completed your first learning module',
+        icon: '🎓',
+        earnedAt: '',
+        category: 'milestone'
+      });
+    }
+    
+    // Dedicated Learner badge - 3 modules
+    if (completedModules >= 3) {
+      awardBadge({
+        id: 'dedicated-learner',
+        name: 'Dedicated Learner',
+        description: 'Completed 3 learning modules',
+        icon: '📚',
+        earnedAt: '',
+        category: 'milestone'
+      });
+    }
+    
+    // Preparedness Expert badge - 5 modules
+    if (completedModules >= 5) {
+      awardBadge({
+        id: 'preparedness-expert',
+        name: 'Preparedness Expert',
+        description: 'Completed 5 learning modules',
+        icon: '⭐',
+        earnedAt: '',
+        category: 'milestone'
+      });
+    }
+    
+    // Master Preparedness badge - 80% overall progress
+    if (overallProgress >= 80) {
+      awardBadge({
+        id: 'master-preparedness',
+        name: 'Master of Preparedness',
+        description: 'Achieved 80% overall preparedness score',
+        icon: '🌟',
+        earnedAt: '',
+        category: 'mastery'
+      });
+    }
+    
+    // Perfect Preparedness badge - 100% overall progress
+    if (overallProgress >= 100) {
+      awardBadge({
+        id: 'perfect-preparedness',
+        name: 'Perfect Preparedness',
+        description: 'Achieved perfect preparedness score',
+        icon: '💎',
+        earnedAt: '',
+        category: 'mastery'
       });
     }
   };
