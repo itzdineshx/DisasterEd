@@ -9,6 +9,7 @@ import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/hooks/useProgress";
 import { modules } from "@/utils/mockData";
+import WeatherWidget from '@/components/WeatherWidget';
 
 const StudentDashboard = () => {
   const { user } = useAuth();
@@ -187,6 +188,9 @@ const StudentDashboard = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Weather Widget */}
+            <WeatherWidget showAlerts={true} />
+            
             {/* Emergency Button */}
             <Card className="bg-gradient-emergency text-white">
               <CardContent className="p-6 text-center">

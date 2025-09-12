@@ -25,6 +25,7 @@ import LiveCommunication from "./pages/LiveCommunication";
 import OfficerDashboard from "./pages/OfficerDashboard";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
+import EmergencyMap from "./pages/EmergencyMap";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +92,11 @@ const App = () => (
           <Route path="/notifications" element={
             <ProtectedRoute>
               <Notifications />
+            </ProtectedRoute>
+          } />
+          <Route path="/emergency-map" element={
+            <ProtectedRoute>
+              <EmergencyMap />
             </ProtectedRoute>
           } />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { generateGeminiResponse } from "@/services/geminiService";
+import { toast } from "sonner";
 
 interface ChatMessage {
   id: string;
@@ -66,10 +68,10 @@ const FloatingAIChatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const generateBotResponse = (userMessage: string): string => {
+  const generateBotResponse = async (userMessage: string): Promise<string> => {
     const message = userMessage.toLowerCase();
     
-    // Check for keywords and return appropriate response
+    // Check for quick emergency keywords first for immediate response
     for (const [keyword, response] of Object.entries(knowledgeBase)) {
       if (message.includes(keyword)) {
         return response;
@@ -81,8 +83,14 @@ const FloatingAIChatbot = () => {
       return "📞 Emergency Numbers:\n• Life-threatening: 911\n• Campus Security: (555) 123-4567\n• Crisis Hotline: 988";
     }
     
-    // Default response
-    return "I can help with emergency procedures, first aid, and safety planning. Try asking about 'fire emergency', 'earthquake', 'first aid', or 'emergency kit'. You can also use the quick action buttons!";
+    // Use Gemini AI for more complex questions
+    try {
+      const context = "You are helping with disaster management and emergency preparedness education. Focus on practical, actionable advice for safety and emergency response.";
+      return await generateGeminiResponse(userMessage, context);
+    } catch (error) {
+      console.error('Gemini API error:', error);
+      return "I can help with emergency procedures, first aid, and safety planning. Try asking about 'fire emergency', 'earthquake', 'first aid', or 'emergency kit'. You can also use the quick action buttons!";
+    }
   };
 
   const sendMessage = async () => {
@@ -96,23 +104,39 @@ const FloatingAIChatbot = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const messageToProcess = newMessage;
     setNewMessage("");
     setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      const responseContent = await generateBotResponse(messageToProcess);
+      
       const botResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        content: generateBotResponse(newMessage),
+        content: responseContent,
         sender: 'bot',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Error generating response:', error);
+      toast.error('Failed to get response. Please try again.');
+      
+      const errorResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: "I'm sorry, I'm having trouble responding right now. Please try again in a moment, or use the quick action buttons for immediate help.",
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
       setIsTyping(false);
-    }, 1000 + Math.random() * 1000);
+    }
   };
 
-  const handleQuickAction = (action: QuickAction) => {
+  const handleQuickAction = async (action: QuickAction) => {
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
       content: action.title,
@@ -123,17 +147,30 @@ const FloatingAIChatbot = () => {
     setMessages(prev => [...prev, userMessage]);
     setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      const responseContent = await generateBotResponse(action.title);
+      
       const botResponse: ChatMessage = {
         id: (Date.now() + 1).toString(),
-        content: generateBotResponse(action.title),
+        content: responseContent,
         sender: 'bot',
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botResponse]);
+    } catch (error) {
+      console.error('Error generating quick action response:', error);
+      const errorResponse: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content: knowledgeBase[action.title.toLowerCase() as keyof typeof knowledgeBase] || "I can help with emergency procedures. Please try again.",
+        sender: 'bot', 
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
