@@ -242,22 +242,31 @@ const Login = () => {
               <div className="text-center space-y-3">
                 <p className="text-sm text-muted-foreground">Quick Demo Access</p>
                 <div className="flex flex-wrap gap-2 justify-center">
-                  {roles.map((role) => (
-                    <Badge
-                      key={role.id}
-                      variant="outline"
-                      className={`cursor-pointer hover:bg-${role.color}/10 hover:border-${role.color}/50 transition-colors`}
-                      onClick={() => {
-                        setSelectedRole(role.id);
-                        // Use demo credentials for quick access
-                        setEmail("john.doe@university.edu");
-                        setPassword("password123");
-                        handleLogin();
-                      }}
-                    >
-                      Demo {role.label}
-                    </Badge>
-                  ))}
+                  {roles.map((role) => {
+                    const demoCredentials = {
+                      student: "john.doe@university.edu",
+                      teacher: "jane.smith@university.edu", 
+                      admin: "admin@university.edu",
+                      officer: "officer@university.edu"
+                    };
+                    
+                    return (
+                      <Badge
+                        key={role.id}
+                        variant="outline"
+                        className={`cursor-pointer hover:bg-${role.color}/10 hover:border-${role.color}/50 transition-colors`}
+                        onClick={() => {
+                          setSelectedRole(role.id);
+                          // Use correct demo credentials for each role
+                          setEmail(demoCredentials[role.id as keyof typeof demoCredentials]);
+                          setPassword("password123");
+                          handleLogin();
+                        }}
+                      >
+                        Demo {role.label}
+                      </Badge>
+                    );
+                  })}
                 </div>
               </div>
             </div>
