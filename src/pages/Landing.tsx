@@ -211,7 +211,7 @@ const Landing = () => {
               </div>
               
               {/* Weather Widget positioned in hero */}
-              <div className="absolute -top-4 -right-4 w-72">
+              <div className="absolute top-4 right-2 w-72">
                 <WeatherWidget showAlerts={true} />
               </div>
             </div>
@@ -230,7 +230,7 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             <Card className="hover:shadow-xl transition-all hover:-translate-y-2 bg-gradient-to-br from-red-50 to-pink-50 border-red-200">
               <CardHeader>
                 <div className="flex items-center space-x-3">
@@ -265,25 +265,6 @@ const Landing = () => {
                 </p>
                 <Button className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700" asChild>
                   <Link to="/emergency-map">🗺️ View Emergency Maps</Link>
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-xl transition-all hover:-translate-y-2 bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
-              <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg">
-                    <Users className="h-6 w-6 text-white" />
-                  </div>
-                  <CardTitle className="text-lg">AI Safety Assistant</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground mb-4 text-sm">
-                  Chat with our AI for instant emergency guidance and disaster management procedures
-                </p>
-                <Button className="w-full" variant="outline" disabled>
-                  🤖 Look for floating bot (bottom-right) →
                 </Button>
               </CardContent>
             </Card>
@@ -357,9 +338,6 @@ const Landing = () => {
             <Button size="lg" variant="secondary" className="px-8 py-4 text-lg font-semibold" asChild>
               <Link to="/login">🚀 Get Started Free</Link>
             </Button>
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-primary px-8 py-4 text-lg font-semibold" asChild>
-              <Link to="/login">📞 Request Demo</Link>
-            </Button>
           </div>
         </div>
       </section>
@@ -391,7 +369,7 @@ const Landing = () => {
             </div>
             <div>
               <h3 className="font-semibold mb-4">Emergency Services (India)</h3>
-              <ul className="space-y-2 text-muted-foreground">
+              <ul className="space-y-6 text-muted-foreground">
                 <li><span className="text-red-600 font-bold">🚔 Police: 100</span></li>
                 <li><span className="text-orange-600 font-bold">🚒 Fire: 101</span></li>
                 <li><span className="text-green-600 font-bold">🚑 Ambulance: 102</span></li>
