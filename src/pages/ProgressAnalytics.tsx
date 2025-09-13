@@ -10,7 +10,7 @@ const ProgressAnalytics = () => {
       <DashboardHeader 
         title="Progress Analytics"
         subtitle="Detailed analysis of your learning journey and emergency preparedness"
-        userRole={user?.role === 'officer' ? 'disaster-officer' : user?.role || 'student'}
+        userRole={user?.role as "student" | "teacher" | "admin" | "officer" || 'student'}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

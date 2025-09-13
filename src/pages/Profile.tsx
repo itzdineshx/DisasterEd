@@ -78,7 +78,7 @@ const Profile = () => {
       <DashboardHeader 
         title="Profile Settings"
         subtitle="Manage your account information and preferences"
-        userRole={user?.role === 'officer' ? 'disaster-officer' : user?.role || 'student'}
+        userRole={user?.role as "student" | "teacher" | "admin" | "officer" || 'student'}
       />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

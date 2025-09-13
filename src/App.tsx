@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import FloatingAIChatbot from "@/components/FloatingAIChatbot";
-import Index from "./pages/Index";
+
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import RoleSelection from "./pages/RoleSelection";

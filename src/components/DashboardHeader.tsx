@@ -1,4 +1,4 @@
-import { Shield, User, LogOut, Bell } from "lucide-react";
+import { Shield, User, LogOut, Bell, Menu, AlertTriangle, BookOpen, Target, MapPin, BarChart3, MessageSquare, Map } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -15,17 +15,29 @@ import { useAuth } from "@/contexts/AuthContext";
 interface DashboardHeaderProps {
   title: string;
   subtitle: string;
-  userRole: "student" | "teacher" | "admin" | "disaster-officer";
+  userRole: "student" | "teacher" | "admin" | "officer";
 }
 
 export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderProps) => {
   const { user, logout } = useAuth();
+  
+  const navigationLinks = [
+    { href: "/emergency", label: "Emergency Hub", icon: AlertTriangle, show: true, color: "emergency" },
+    { href: "/real-time-alerts", label: "Live Alerts", icon: Bell, show: true, color: "warning" },
+    { href: "/geo-location-tips", label: "Safety Tips", icon: MapPin, show: true, color: "safe" },
+    { href: "/emergency-map", label: "Emergency Map", icon: Map, show: true, color: "primary" },
+    { href: "/live-communication", label: "Communication", icon: MessageSquare, show: true, color: "primary" },
+    { href: "/modules", label: "Training Modules", icon: BookOpen, show: userRole !== 'officer', color: "primary" },
+    { href: "/drill-simulator", label: "Drill Simulator", icon: Target, show: userRole !== 'officer', color: "primary" },
+    { href: "/progress-analytics", label: "Analytics", icon: BarChart3, show: userRole !== 'officer', color: "primary" },
+  ];
+
   const getRoleColor = (role: string) => {
     switch (role) {
       case "student": return "primary";
       case "teacher": return "safe";
       case "admin": return "warning";
-      case "disaster-officer": return "emergency";
+      case "officer": return "emergency";
       default: return "primary";
     }
   };
@@ -35,7 +47,7 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
       case "student": return "Student";
       case "teacher": return "Teacher";
       case "admin": return "Administrator";
-      case "disaster-officer": return "Disaster Officer";
+      case "officer": return "Disaster Officer";
       default: return "User";
     }
   };
@@ -51,31 +63,43 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
               <span className="font-bold text-xl text-foreground">DisasterEd</span>
             </Link>
             
-            <nav className="hidden md:flex space-x-6">
-              <Link 
-                to="/student-dashboard" 
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                Dashboard
-              </Link>
-              <Link 
-                to="/modules" 
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                Modules
-              </Link>
-              <Link 
-                to="/drills" 
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                Drills
-              </Link>
-              <Link 
-                to="/emergency" 
-                className="text-emergency hover:text-emergency/80 transition-colors font-medium"
-              >
-                Emergency
-              </Link>
+            <nav className="hidden lg:flex space-x-4">
+              {navigationLinks.filter(link => link.show).slice(0, 4).map((link) => {
+                const IconComponent = link.icon;
+                return (
+                  <Link 
+                    key={link.href}
+                    to={link.href} 
+                    className={`text-muted-foreground hover:text-${link.color} transition-colors flex items-center space-x-1 ${link.color === 'emergency' ? 'font-medium' : ''}`}
+                  >
+                    <IconComponent className="h-4 w-4" />
+                    <span>{link.label}</span>
+                  </Link>
+                );
+              })}
+              
+              {/* Quick Access Menu for remaining links */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-primary">
+                    <Menu className="h-4 w-4 mr-1" />
+                    More
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  {navigationLinks.filter(link => link.show).slice(4).map((link) => {
+                    const IconComponent = link.icon;
+                    return (
+                      <DropdownMenuItem key={link.href} asChild>
+                        <Link to={link.href} className="flex items-center">
+                          <IconComponent className="h-4 w-4 mr-2" />
+                          {link.label}
+                        </Link>
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </nav>
           </div>
 

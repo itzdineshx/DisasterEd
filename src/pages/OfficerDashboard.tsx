@@ -98,7 +98,7 @@ const OfficerDashboard = () => {
       <DashboardHeader 
         title={`Emergency Command Center - ${user?.firstName || 'Officer'}`}
         subtitle="Monitor and coordinate emergency response operations"
-        userRole="disaster-officer"
+        userRole="officer"
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

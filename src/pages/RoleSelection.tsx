@@ -48,14 +48,14 @@ const RoleSelection = () => {
       route: "/admin-dashboard"
     },
     {
-      id: "disaster-officer",
+      id: "officer",
       title: "Disaster Officer",
       description: "Coordinate emergency response and manage real-time communications",
       icon: UserCheck,
       color: "emergency",
       features: [
         "Emergency alert management",
-        "Real-time communication tools",
+        "Real-time communication tools", 
         "Incident response coordination",
         "Crisis management dashboard"
       ],
@@ -137,7 +137,7 @@ const RoleSelection = () => {
               Need help choosing? Contact our support team for guidance.
             </p>
             <Button variant="outline" className="mt-4" asChild>
-              <Link to="/contact">Get Help</Link>
+              <Link to="/">Contact Support</Link>
             </Button>
           </div>
         </div>

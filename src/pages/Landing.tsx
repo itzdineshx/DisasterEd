@@ -282,7 +282,7 @@ const Landing = () => {
               <h3 className="font-semibold mb-4">Platform</h3>
               <ul className="space-y-2 text-muted-foreground">
                 <li><Link to="/emergency" className="hover:text-primary">Emergency Hub</Link></li>
-                <li><Link to="/ai-chatbot" className="hover:text-primary">AI Assistant</Link></li>
+                <li><span className="text-muted-foreground">AI Assistant (floating chat)</span></li>
                 <li><Link to="/real-time-alerts" className="hover:text-primary">Live Alerts</Link></li>
               </ul>
             </div>

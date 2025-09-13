@@ -169,7 +169,7 @@ const Login = () => {
                         <input type="checkbox" className="rounded" />
                         <span>Remember me</span>
                       </label>
-                      <Link to="/forgot-password" className="text-primary hover:underline">
+                      <Link to="/" className="text-primary hover:underline">
                         Forgot password?
                       </Link>
                     </div>
@@ -266,7 +266,7 @@ const Login = () => {
 
         <div className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link to="/contact" className="text-primary hover:underline">
+          <Link to="/" className="text-primary hover:underline">
             Contact your institution admin
           </Link>
         </div>
