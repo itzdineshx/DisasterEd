@@ -4,25 +4,29 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, MapPin, Phone, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import GoogleMap from '@/components/GoogleMap';
+import OpenStreetMap from '@/components/OpenStreetMap';
 import WeatherWidget from '@/components/WeatherWidget';
 
 const EmergencyMap = () => {
   const navigate = useNavigate();
 
   const emergencyContacts = [
-    { name: 'Emergency Services', number: '911', type: 'emergency' },
-    { name: 'Campus Security', number: '(555) 123-4567', type: 'security' },
-    { name: 'Crisis Hotline', number: '988', type: 'mental-health' },
-    { name: 'Poison Control', number: '1-800-222-1222', type: 'poison' },
+    { name: 'Police Emergency', number: '100', type: 'emergency' },
+    { name: 'Fire Emergency', number: '101', type: 'fire' },
+    { name: 'Ambulance Emergency', number: '102', type: 'medical' },
+    { name: 'Disaster Management', number: '108', type: 'disaster' },
+    { name: 'Women Helpline', number: '1091', type: 'women' },
+    { name: 'Child Helpline', number: '1098', type: 'child' },
   ];
 
   const getContactColor = (type: string) => {
     const colors = {
       emergency: 'bg-red-100 text-red-800',
-      security: 'bg-blue-100 text-blue-800',
-      'mental-health': 'bg-green-100 text-green-800',
-      poison: 'bg-purple-100 text-purple-800',
+      fire: 'bg-orange-100 text-orange-800',
+      medical: 'bg-green-100 text-green-800',
+      disaster: 'bg-blue-100 text-blue-800',
+      women: 'bg-pink-100 text-pink-800',
+      child: 'bg-purple-100 text-purple-800',
     };
     return colors[type as keyof typeof colors] || 'bg-gray-100 text-gray-800';
   };
@@ -47,8 +51,8 @@ const EmergencyMap = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Map and Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            <GoogleMap 
-              center={{ lat: 40.7128, lng: -74.0060 }}
+            <OpenStreetMap 
+              center={{ lat: 28.6139, lng: 77.2090 }}
               zoom={10}
               onLocationUpdate={(location) => {
                 console.log('User location updated:', location);
@@ -74,7 +78,7 @@ const EmergencyMap = () => {
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="flex-shrink-0 w-1.5 h-1.5 bg-red-500 rounded-full mt-2"></span>
-                        Call 911 for life-threatening emergencies
+                        Call 100 (Police), 101 (Fire), or 102 (Ambulance) for emergencies
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="flex-shrink-0 w-1.5 h-1.5 bg-red-500 rounded-full mt-2"></span>
@@ -150,10 +154,10 @@ const EmergencyMap = () => {
                   variant="outline" 
                   size="sm" 
                   className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50"
-                  onClick={() => window.open('tel:911')}
+                  onClick={() => window.open('tel:100')}
                 >
                   <Phone className="h-4 w-4 mr-2" />
-                  Call 911
+                  Call 100 (Police)
                 </Button>
                 <Button 
                   variant="outline" 
