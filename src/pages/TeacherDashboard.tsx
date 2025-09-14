@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
-import { mockStudentData, modules } from "@/utils/mockData";
+import { mockModules, mockUsers } from "@/utils/mockData";
 
 const TeacherDashboard = () => {
   const { user } = useAuth();
@@ -31,8 +31,8 @@ const TeacherDashboard = () => {
 
   // Filter students by selected class
   const filteredStudents = selectedClass === "all" 
-    ? mockStudentData 
-    : mockStudentData.filter(student => 
+    ? mockUsers.filter(user => user.role === 'student')
+    : mockUsers.filter(user => user.role === 'student').filter(student =>
         selectedClass === "safety-101" && student.class === "Safety 101" ||
         selectedClass === "emergency-response" && student.class === "Emergency Response" ||
         selectedClass === "advanced-safety" && student.class === "Advanced Safety"

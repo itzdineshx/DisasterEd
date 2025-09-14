@@ -28,7 +28,7 @@ const QuickEmergencyPanel: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 max-w-sm">
+    <div className="fixed bottom-4 left-4 z-50 max-w-sm">
       <Card className={cn(
         "bg-white/95 backdrop-blur-sm border-2 border-red-200 shadow-lg transition-all duration-300",
         isMinimized ? "h-16" : "h-auto"

@@ -211,7 +211,7 @@ const Landing = () => {
               </div>
               
               {/* Weather Widget positioned in hero */}
-              <div className="absolute top-4 right-2 w-72">
+              <div className="absolute top-4 right-2 w-72 hidden lg:block">
                 <WeatherWidget showAlerts={true} />
               </div>
             </div>
@@ -230,7 +230,7 @@ const Landing = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <Card className="hover:shadow-xl transition-all hover:-translate-y-2 bg-gradient-to-br from-red-50 to-pink-50 border-red-200">
               <CardHeader>
                 <div className="flex items-center space-x-3">

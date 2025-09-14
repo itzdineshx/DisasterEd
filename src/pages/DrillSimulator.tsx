@@ -192,7 +192,7 @@ const DrillSimulator = () => {
             <span>/</span>
             <span>Drill Simulator</span>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {drills.map((drill) => (
               <Card 
                 key={drill.id}
@@ -254,7 +254,7 @@ const DrillSimulator = () => {
                 How Virtual Drills Work
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid md:grid-cols-3 gap-6">
+            <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="text-center space-y-2">
                 <div className="inline-flex p-3 bg-primary/10 rounded-full">
                   <Play className="h-6 w-6 text-primary" />
@@ -325,7 +325,7 @@ const DrillSimulator = () => {
             </CardHeader>
 
             <CardContent className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="text-center p-6 bg-primary/5 rounded-lg">
                   <div className="text-4xl font-bold text-primary">{percentage}%</div>
                   <div className="text-muted-foreground">Overall Score</div>

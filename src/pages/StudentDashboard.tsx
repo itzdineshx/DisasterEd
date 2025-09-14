@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/hooks/useProgress";
-import { modules } from "@/utils/mockData";
+import { mockModules } from "@/utils/mockData";
 import WeatherWidget from '@/components/WeatherWidget';
 
 const StudentDashboard = () => {

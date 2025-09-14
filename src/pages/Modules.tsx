@@ -214,7 +214,7 @@ const Modules = () => {
         </div>
 
         {/* Modules Grid */}
-        <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredModules.map((module) => (
             <Card 
               key={module.id} 
@@ -251,7 +251,7 @@ const Modules = () => {
                 <p className="text-muted-foreground text-sm">{module.description}</p>
 
                 {/* Module Stats */}
-                <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="flex items-center space-x-2">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <span>{module.duration}</span>

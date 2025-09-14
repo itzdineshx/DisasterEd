@@ -249,7 +249,7 @@ const Quiz = () => {
 
             <CardContent className="space-y-6">
               {/* Score Summary */}
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="text-center p-4 bg-primary/5 rounded-lg">
                   <div className="text-3xl font-bold text-primary">{score}%</div>
                   <div className="text-sm text-muted-foreground">Final Score</div>
