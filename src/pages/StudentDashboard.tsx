@@ -16,7 +16,7 @@ const StudentDashboard = () => {
   const { moduleProgress, badges, getOverallProgress, getCompletedModules } = useProgress();
 
   // Get real module data with progress
-  const moduleData = modules.slice(0, 4).map(module => {
+  const moduleData = mockModules.slice(0, 4).map(module => {
     const progress = moduleProgress[module.id];
     return {
       id: module.id,

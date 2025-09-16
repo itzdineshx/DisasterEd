@@ -225,7 +225,7 @@ const TeacherDashboard = () => {
             </div>
 
             <div className="grid gap-4">
-              {modules.slice(0, 5).map((module) => (
+              {mockModules.slice(0, 5).map((module) => (
                 <Card key={module.id} className="shadow-card">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
@@ -272,7 +272,7 @@ const TeacherDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {modules.slice(0, 4).map((module, index) => (
+                    {mockModules.slice(0, 4).map((module, index) => (
                       <div key={module.id} className="space-y-2">
                         <div className="flex justify-between">
                           <span className="text-sm font-medium">{module.title}</span>

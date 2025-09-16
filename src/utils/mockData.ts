@@ -8,6 +8,11 @@ export interface User {
   avatar: string;
   institution?: string;
   department?: string;
+  class?: string;
+  modulesCompleted?: number;
+  totalModules?: number;
+  averageScore?: number;
+  lastActive?: string;
 }
 
 export interface Module {
@@ -56,7 +61,12 @@ export const mockUsers: User[] = [
     role: 'student',
     avatar: '👨‍🎓',
     institution: 'Delhi University',
-    department: 'Computer Science'
+    department: 'Computer Science',
+    class: 'Safety 101',
+    modulesCompleted: 4,
+    totalModules: 6,
+    averageScore: 87,
+    lastActive: '2024-01-15'
   },
   {
     id: 'teacher1',
@@ -66,6 +76,34 @@ export const mockUsers: User[] = [
     avatar: '👩‍🏫',
     institution: 'Mumbai Institute of Technology',
     department: 'Safety Engineering'
+  },
+  {
+    id: 'student2',
+    name: 'Rahul Kumar',
+    email: 'rahul@disastered.com',
+    role: 'student',
+    avatar: '👨‍🎓',
+    institution: 'Delhi University',
+    department: 'Mechanical Engineering',
+    class: 'Emergency Response',
+    modulesCompleted: 2,
+    totalModules: 6,
+    averageScore: 92,
+    lastActive: '2024-01-14'
+  },
+  {
+    id: 'student3',
+    name: 'Sneha Patel',
+    email: 'sneha@disastered.com',
+    role: 'student',
+    avatar: '👩‍🎓',
+    institution: 'Mumbai Institute of Technology',
+    department: 'Civil Engineering',
+    class: 'Advanced Safety',
+    modulesCompleted: 5,
+    totalModules: 6,
+    averageScore: 78,
+    lastActive: '2024-01-13'
   },
   {
     id: 'admin1',
