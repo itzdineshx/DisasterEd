@@ -192,107 +192,34 @@ const Landing = () => {
                 </Button>
               </div>
 
-              {/* Enhanced Emergency Numbers Quick Access - Matching Reference Design */}
-              <div className="bg-white/80 dark:bg-card/80 backdrop-blur-sm rounded-2xl p-6 border border-red-200 dark:border-red-800 shadow-xl animate-fade-in" style={{animationDelay: '300ms'}}>
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="p-3 bg-gradient-to-r from-red-500 to-pink-600 rounded-xl shadow-lg">
-                    <Phone className="h-6 w-6 text-white" />
+              {/* Enhanced Emergency Numbers Quick Access */}
+              <div className="bg-gradient-to-r from-red-50 via-orange-50 to-pink-50 dark:from-red-950/20 dark:via-orange-950/20 dark:to-pink-950/20 rounded-2xl p-6 border border-red-200 dark:border-red-800 shadow-emergency animate-fade-in" style={{animationDelay: '300ms'}}>
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="p-2 bg-gradient-to-r from-red-500 to-pink-600 rounded-lg">
+                    <Phone className="h-5 w-5 text-white" />
                   </div>
-                  <h3 className="font-bold text-xl text-red-800 dark:text-red-200">Indian Emergency Hotlines</h3>
+                  <h3 className="font-bold text-lg text-red-800 dark:text-red-200">Indian Emergency Hotlines</h3>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  {/* Police */}
-                  <button
-                    onClick={() => window.open('tel:100')}
-                    className="bg-red-500 hover:bg-red-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Phone className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="text-right">
-                        <div className="text-sm font-medium opacity-90">Police</div>
-                        <div className="text-2xl font-bold">100</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {emergencyNumbers.map((contact, index) => (
+                    <Button
+                      key={index}
+                      size="sm"
+                      className={`${contact.color} text-white font-bold hover-scale transition-all group relative overflow-hidden`}
+                      onClick={() => window.open(`tel:${contact.number}`)}
+                      title={contact.description}
+                    >
+                      <Phone className="h-4 w-4 mr-2 group-hover:animate-pulse" />
+                      <div className="flex flex-col items-start">
+                        <span className="text-sm font-bold">{contact.name}</span>
+                        <span className="text-lg font-black">{contact.number}</span>
                       </div>
-                    </div>
-                  </button>
-
-                  {/* Fire Brigade */}
-                  <button
-                    onClick={() => window.open('tel:101')}
-                    className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Phone className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="text-right">
-                        <div className="text-sm font-medium opacity-90">Fire Brigade</div>
-                        <div className="text-2xl font-bold">101</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Ambulance */}
-                  <button
-                    onClick={() => window.open('tel:102')}
-                    className="bg-green-500 hover:bg-green-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Phone className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="text-right">
-                        <div className="text-sm font-medium opacity-90">Ambulance</div>
-                        <div className="text-2xl font-bold">102</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Disaster Management */}
-                  <button
-                    onClick={() => window.open('tel:108')}
-                    className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Phone className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="text-right">
-                        <div className="text-sm font-medium opacity-90">Disaster Mgmt</div>
-                        <div className="text-2xl font-bold">108</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Women Helpline */}
-                  <button
-                    onClick={() => window.open('tel:1091')}
-                    className="bg-purple-500 hover:bg-purple-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Phone className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="text-right">
-                        <div className="text-sm font-medium opacity-90">Women Helpline</div>
-                        <div className="text-2xl font-bold">1091</div>
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Child Helpline */}
-                  <button
-                    onClick={() => window.open('tel:1098')}
-                    className="bg-pink-500 hover:bg-pink-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
-                  >
-                    <div className="flex items-center justify-between">
-                      <Phone className="h-5 w-5 group-hover:animate-pulse" />
-                      <div className="text-right">
-                        <div className="text-sm font-medium opacity-90">Child Helpline</div>
-                        <div className="text-2xl font-bold">1098</div>
-                      </div>
-                    </div>
-                  </button>
+                    </Button>
+                  ))}
                 </div>
-                
-                <div className="text-center">
-                  <p className="text-sm text-orange-600 dark:text-orange-400 font-medium flex items-center justify-center space-x-1">
-                    <Zap className="h-4 w-4" />
-                    <span>Tap any number for instant calling • Available 24/7 across India</span>
-                  </p>
-                </div>
+                <p className="text-xs text-red-700 dark:text-red-300 mt-3 text-center font-medium">
+                  ⚡ Tap any number for instant calling • Available 24/7 across India
+                </p>
               </div>
 
               {/* Enhanced Live Demo Buttons */}
@@ -531,338 +458,52 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* About Developer Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-6 mb-12 animate-fade-in">
-            <Badge variant="outline" className="text-primary px-4 py-2 bg-white/50 dark:bg-card/50 backdrop-blur-sm">
-              👨‍💻 Meet the Developer
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Built with Passion for Safety
-            </h2>
-            <div className="max-w-3xl mx-auto">
-              <Card className="p-8 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/40 transition-all hover-scale shadow-xl">
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="w-24 h-24 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold text-2xl">DS</span>
-                  </div>
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold text-primary mb-2">DINESH S</h3>
-                    <p className="text-lg text-muted-foreground mb-4">Computer Science Engineering Student</p>
-                    <div className="flex items-center justify-center space-x-2 text-purple-600 dark:text-purple-400">
-                      <MapPin className="h-4 w-4" />
-                      <span className="font-medium">DMI College of Engineering, Chennai</span>
-                    </div>
-                  </div>
-                  <p className="text-center text-muted-foreground max-w-2xl leading-relaxed">
-                    Passionate about leveraging technology to create safer communities. This platform combines modern web technologies 
-                    with real-world emergency preparedness to make disaster education accessible to everyone across India.
-                  </p>
-                  <div className="flex flex-wrap gap-2 justify-center pt-4">
-                    <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30">React & TypeScript</Badge>
-                    <Badge variant="secondary" className="bg-gradient-to-r from-green-100 to-teal-100 dark:from-green-900/30 dark:to-teal-900/30">AI Integration</Badge>
-                    <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30">Emergency Systems</Badge>
-                    <Badge variant="secondary" className="bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30">Real-time APIs</Badge>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Enhanced Testimonials Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 dark:from-green-950/30 dark:via-teal-950/30 dark:to-blue-950/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-12 sm:mb-16 animate-fade-in">
-            <Badge variant="outline" className="text-primary px-4 py-2 bg-white/50 dark:bg-card/50 backdrop-blur-sm">
-              🌟 Success Stories
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Trusted by Educational Institutions Across India
-            </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              See how DisasterEd is transforming emergency preparedness education in schools and colleges nationwide
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <Card className="p-6 bg-white/70 dark:bg-card/70 backdrop-blur-sm hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-green-200 dark:border-green-800">
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-full flex items-center justify-center">
-                    <Award className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-green-800 dark:text-green-200">Dr. Priya Sharma</h4>
-                    <p className="text-sm text-muted-foreground">Principal, Delhi Public School, Mumbai</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  "DisasterEd has revolutionized our emergency preparedness program. The AI-powered simulations and real-time weather alerts 
-                  have made our students 90% more confident in handling emergency situations."
-                </p>
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                  <span className="text-sm text-muted-foreground ml-2">5.0/5</span>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-white/70 dark:bg-card/70 backdrop-blur-sm hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-blue-200 dark:border-blue-800" style={{animationDelay: '100ms'}}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                    <Users className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-blue-800 dark:text-blue-200">Prof. Rajesh Kumar</h4>
-                    <p className="text-sm text-muted-foreground">Emergency Coordinator, IIT Chennai</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  "The interactive emergency maps and Indian emergency hotline integration saved precious time during our last drill. 
-                  Students could instantly access emergency services and evacuation routes."
-                </p>
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                  <span className="text-sm text-muted-foreground ml-2">5.0/5</span>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-white/70 dark:bg-card/70 backdrop-blur-sm hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-purple-200 dark:border-purple-800" style={{animationDelay: '200ms'}}>
-              <div className="space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-purple-800 dark:text-purple-200">Ms. Kavitha Reddy</h4>
-                    <p className="text-sm text-muted-foreground">Safety Officer, Anna University, Chennai</p>
-                  </div>
-                </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  "The comprehensive disaster modules covering earthquakes, floods, and cyclones specific to Indian conditions 
-                  are exactly what our curriculum needed. The progress analytics help track student engagement perfectly."
-                </p>
-                <div className="flex items-center space-x-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                  <span className="text-sm text-muted-foreground ml-2">5.0/5</span>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* India-Specific Disaster Preparedness Section */}
-      <section className="py-16 sm:py-20 bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 dark:from-orange-950/30 dark:via-red-950/30 dark:to-pink-950/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-12 sm:mb-16 animate-fade-in">
-            <Badge variant="outline" className="text-primary px-4 py-2 bg-white/50 dark:bg-card/50 backdrop-blur-sm">
-              🇮🇳 India-Specific Training
-            </Badge>
-            <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Disaster Preparedness for Indian Conditions
-            </h2>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-              Comprehensive training modules designed specifically for India's diverse geographical and climatic challenges
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-            <Card className="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/50 dark:to-red-950/50 hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-orange-200 dark:border-orange-800">
-              <div className="space-y-4 text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
-                  <Mountain className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-bold text-xl text-orange-800 dark:text-orange-200">Earthquake Zones</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Special focus on high-risk zones like Delhi, Gujarat, and Northeast states. Learn building safety codes and earthquake-resistant construction.
-                </p>
-                <div className="bg-orange-100 dark:bg-orange-900/30 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-orange-600">Zone V</div>
-                  <div className="text-xs text-orange-700 dark:text-orange-300">Highest Risk Areas</div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-blue-200 dark:border-blue-800" style={{animationDelay: '100ms'}}>
-              <div className="space-y-4 text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
-                  <Droplets className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-bold text-xl text-blue-800 dark:text-blue-200">Monsoon Floods</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Specific training for monsoon-related flooding in Kerala, Assam, Bihar, and urban areas like Mumbai and Chennai.
-                </p>
-                <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-blue-600">Jun-Sep</div>
-                  <div className="text-xs text-blue-700 dark:text-blue-300">Peak Flood Season</div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/50 dark:to-indigo-950/50 hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-purple-200 dark:border-purple-800" style={{animationDelay: '200ms'}}>
-              <div className="space-y-4 text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
-                  <Wind className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-bold text-xl text-purple-800 dark:text-purple-200">Cyclone Safety</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Coastal area preparedness for Odisha, Andhra Pradesh, Tamil Nadu, and West Bengal cyclone-prone regions.
-                </p>
-                <div className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-purple-600">Apr-Dec</div>
-                  <div className="text-xs text-purple-700 dark:text-purple-300">Cyclone Seasons</div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-6 bg-gradient-to-br from-red-50 to-pink-50 dark:from-red-950/50 dark:to-pink-950/50 hover:shadow-xl transition-all hover:-translate-y-2 hover-scale animate-fade-in border-2 border-red-200 dark:border-red-800" style={{animationDelay: '300ms'}}>
-              <div className="space-y-4 text-center">
-                <div className="w-16 h-16 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center mx-auto shadow-lg">
-                  <Flame className="h-8 w-8 text-white" />
-                </div>
-                <h3 className="font-bold text-xl text-red-800 dark:text-red-200">Heat Waves</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  Summer heat wave management for Rajasthan, Haryana, and central Indian states with temperatures exceeding 45°C.
-                </p>
-                <div className="bg-red-100 dark:bg-red-900/30 rounded-lg p-3">
-                  <div className="text-2xl font-bold text-red-600">45°C+</div>
-                  <div className="text-xs text-red-700 dark:text-red-300">Extreme Heat Alert</div>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          <div className="mt-12 text-center animate-fade-in" style={{animationDelay: '400ms'}}>
-            <Card className="p-8 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-2 border-primary/20 max-w-4xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">29</div>
-                  <div className="text-sm text-muted-foreground">States & UTs Covered</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">22</div>
-                  <div className="text-sm text-muted-foreground">Official Languages</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-2">100%</div>
-                  <div className="text-sm text-muted-foreground">India-Specific Content</div>
-                </div>
-              </div>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* Quick Emergency Panel */}
       <QuickEmergencyPanel />
 
-      {/* Enhanced Footer */}
-      <footer className="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {/* Footer */}
+      <footer className="bg-background border-t py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <div className="p-2 bg-gradient-to-r from-red-500 to-pink-600 rounded-lg">
-                  <Shield className="h-6 w-6 text-white" />
-                </div>
-                <span className="font-bold text-xl">DisasterEd</span>
+                <Shield className="h-6 w-6 text-primary" />
+                <span className="font-bold text-lg">DisasterEd</span>
               </div>
-              <p className="text-gray-300 leading-relaxed">
-                India's most comprehensive disaster education platform, built to create safer communities through technology and knowledge.
+              <p className="text-muted-foreground">
+                Building safer communities through education and preparedness.
               </p>
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2 text-gray-300">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm">DMI College of Engineering, Chennai</span>
-                </div>
-                <div className="flex items-center space-x-2 text-gray-300">
-                  <Clock className="h-4 w-4" />
-                  <span className="text-sm">Available 24/7 across India</span>
-                </div>
-              </div>
             </div>
-
-            <div className="space-y-4">
-              <h4 className="font-bold text-lg">Emergency Services</h4>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between bg-red-600/20 rounded-lg p-2">
-                  <span className="text-sm">Police Emergency</span>
-                  <Badge variant="secondary" className="bg-red-500 text-white">100</Badge>
-                </div>
-                <div className="flex items-center justify-between bg-orange-600/20 rounded-lg p-2">
-                  <span className="text-sm">Fire Brigade</span>
-                  <Badge variant="secondary" className="bg-orange-500 text-white">101</Badge>
-                </div>
-                <div className="flex items-center justify-between bg-green-600/20 rounded-lg p-2">
-                  <span className="text-sm">Medical Emergency</span>
-                  <Badge variant="secondary" className="bg-green-500 text-white">102</Badge>
-                </div>
-                <div className="flex items-center justify-between bg-blue-600/20 rounded-lg p-2">
-                  <span className="text-sm">Disaster Management</span>
-                  <Badge variant="secondary" className="bg-blue-500 text-white">108</Badge>
-                </div>
-              </div>
+            <div>
+              <h3 className="font-semibold mb-4">Platform</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link to="/emergency" className="hover:text-primary">🚨 Emergency Hub</Link></li>
+                <li><Link to="/emergency-map" className="hover:text-primary">🗺️ Interactive Maps</Link></li>
+                <li><span className="text-muted-foreground">🤖 AI Assistant (floating chat)</span></li>
+                <li><Link to="/real-time-alerts" className="hover:text-primary">⛈️ Weather Alerts</Link></li>
+              </ul>
             </div>
-
-            <div className="space-y-4">
-              <h4 className="font-bold text-lg">Quick Links</h4>
-              <div className="space-y-2">
-                <Link to="/emergency" className="block text-gray-300 hover:text-white transition-colors">Emergency Hub</Link>
-                <Link to="/emergency-map" className="block text-gray-300 hover:text-white transition-colors">Interactive Maps</Link>
-                <Link to="/real-time-alerts" className="block text-gray-300 hover:text-white transition-colors">Weather Alerts</Link>
-                <Link to="/modules" className="block text-gray-300 hover:text-white transition-colors">Training Modules</Link>
-                <Link to="/login" className="block text-gray-300 hover:text-white transition-colors">Get Started</Link>
-              </div>
+            <div>
+              <h3 className="font-semibold mb-4">Emergency Services (India)</h3>
+              <ul className="space-y-6 text-muted-foreground">
+                <li><span className="text-red-600 font-bold">🚔 Police: 100</span></li>
+                <li><span className="text-orange-600 font-bold">🚒 Fire: 101</span></li>
+                <li><span className="text-green-600 font-bold">🚑 Ambulance: 102</span></li>
+                <li><span className="text-blue-600 font-bold">🌪️ Disaster: 108</span></li>
+              </ul>
             </div>
-
-            <div className="space-y-4">
-              <h4 className="font-bold text-lg">Platform Stats</h4>
-              <div className="space-y-3">
-                <div className="bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-lg p-3">
-                  <div className="text-2xl font-bold">50,000+</div>
-                  <div className="text-sm text-gray-300">Students Trained</div>
-                </div>
-                <div className="bg-gradient-to-r from-green-600/20 to-teal-600/20 rounded-lg p-3">
-                  <div className="text-2xl font-bold">1,200+</div>
-                  <div className="text-sm text-gray-300">Schools Connected</div>
-                </div>
-                <div className="bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-lg p-3">
-                  <div className="text-2xl font-bold">99.5%</div>
-                  <div className="text-sm text-gray-300">Preparedness Score</div>
-                </div>
-              </div>
+            <div>
+              <h3 className="font-semibold mb-4">Get Started</h3>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link to="/login" className="hover:text-primary">Sign In</Link></li>
+                <li><Link to="/role-selection" className="hover:text-primary">Choose Role</Link></li>
+                <li><Link to="/modules" className="hover:text-primary">Training Modules</Link></li>
+              </ul>
             </div>
           </div>
-
-          <div className="border-t border-gray-700 mt-12 pt-8">
-            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <div className="text-center md:text-left">
-                <p className="text-gray-300">
-                  © 2024 DisasterEd. Built with ❤️ by <span className="font-semibold text-primary">DINESH S</span> at DMI College of Engineering, Chennai.
-                </p>
-                <p className="text-sm text-gray-400 mt-1">Empowering India with emergency preparedness through technology.</p>
-              </div>
-              <div className="flex items-center space-x-4">
-                <Badge variant="outline" className="text-white border-white/30">
-                  Made in India 🇮🇳
-                </Badge>
-                <Badge variant="outline" className="text-white border-white/30">
-                  Open Source
-                </Badge>
-              </div>
-            </div>
+          <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
+            <p>&copy; 2024 DisasterEd India. Comprehensive disaster preparedness education platform. All rights reserved.</p>
+            <p className="text-sm mt-2">🇮🇳 Proudly serving educational institutions across India with localized emergency response training.</p>
           </div>
         </div>
       </footer>
