@@ -9,18 +9,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTeacherData } from "@/hooks/useLocalStorage";
 import { mockModules, mockUsers } from "@/utils/mockData";
 
 const TeacherDashboard = () => {
   const { user } = useAuth();
   const [selectedClass, setSelectedClass] = useState("all");
-
-  // Mock data for teacher's classes
-  const teacherClasses = [
-    { id: 'safety-101', name: 'Safety 101', students: 45, semester: 'Fall 2024' },
-    { id: 'emergency-response', name: 'Emergency Response', students: 32, semester: 'Fall 2024' },
-    { id: 'advanced-safety', name: 'Advanced Safety', students: 28, semester: 'Fall 2024' }
-  ];
+  const { classes: teacherClasses, studentData, updateClass } = useTeacherData();
 
   const classStats = [
     { title: "Total Students", value: "105", change: "+8%", icon: Users, color: "primary" },
@@ -52,9 +47,9 @@ const TeacherDashboard = () => {
         userRole="teacher"
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto mobile-container py-4 sm:py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="mobile-stats-grid mb-6 sm:mb-8">
           {classStats.map((stat, index) => {
             const IconComponent = stat.icon;
             return (
@@ -76,20 +71,29 @@ const TeacherDashboard = () => {
           })}
         </div>
 
-        <Tabs defaultValue="students" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="students">Student Management</TabsTrigger>
-            <TabsTrigger value="classes">My Classes</TabsTrigger>
-            <TabsTrigger value="content">Course Content</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+        <Tabs defaultValue="students" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+            <TabsTrigger value="students" className="text-xs sm:text-sm">
+              <span className="mobile-hide">Student Management</span>
+              <span className="mobile-show">Students</span>
+            </TabsTrigger>
+            <TabsTrigger value="classes" className="text-xs sm:text-sm">
+              <span className="mobile-hide">My Classes</span>
+              <span className="mobile-show">Classes</span>
+            </TabsTrigger>
+            <TabsTrigger value="content" className="text-xs sm:text-sm">
+              <span className="mobile-hide">Course Content</span>
+              <span className="mobile-show">Content</span>
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="text-xs sm:text-sm">Analytics</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="students" className="space-y-6">
+          <TabsContent value="students" className="space-y-4 sm:space-y-6">
             {/* Class Filter */}
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Student Progress</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="mobile-header font-bold">Student Progress</h2>
               <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="w-48">
+                <SelectTrigger className="w-full sm:w-48">
                   <SelectValue placeholder="Select class" />
                 </SelectTrigger>
                 <SelectContent>
@@ -104,30 +108,34 @@ const TeacherDashboard = () => {
             {/* Student Table */}
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle>Student Performance Overview</CardTitle>
+                <CardTitle className="mobile-header">Student Performance Overview</CardTitle>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Student</TableHead>
-                      <TableHead>Class</TableHead>
-                      <TableHead>Progress</TableHead>
-                      <TableHead>Avg. Score</TableHead>
-                      <TableHead>Last Active</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
+              <CardContent className="mobile-card">
+                <div className="overflow-x-auto">
+                  <Table className="mobile-table">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student</TableHead>
+                        <TableHead className="mobile-hide">Class</TableHead>
+                        <TableHead>Progress</TableHead>
+                        <TableHead className="mobile-hide">Avg. Score</TableHead>
+                        <TableHead className="mobile-hide">Last Active</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
                   <TableBody>
                     {filteredStudents.map((student) => (
                       <TableRow key={student.id}>
                         <TableCell>
                           <div>
-                            <div className="font-medium">{student.name}</div>
-                            <div className="text-sm text-muted-foreground">{student.email}</div>
+                            <div className="font-medium text-sm">{student.name}</div>
+                            <div className="text-xs text-muted-foreground mobile-hide">{student.email}</div>
+                            <div className="mobile-show">
+                              <Badge variant="outline" className="text-xs mt-1">{student.class}</Badge>
+                            </div>
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="mobile-hide">
                           <Badge variant="outline">{student.class}</Badge>
                         </TableCell>
                         <TableCell>
@@ -139,42 +147,44 @@ const TeacherDashboard = () => {
                             <Progress value={(student.modulesCompleted / student.totalModules) * 100} className="h-2" />
                           </div>
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="mobile-hide">
                           <span className={`font-medium ${getScoreColor(student.averageScore)}`}>
                             {student.averageScore}%
                           </span>
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell className="mobile-hide text-sm text-muted-foreground">
                           {new Date(student.lastActive).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
-                          <div className="flex space-x-2">
-                            <Button variant="ghost" size="sm">
-                              <Eye className="h-4 w-4" />
+                          <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
+                            <Button variant="ghost" size="sm" className="mobile-button">
+                              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
+                              <span className="mobile-show ml-1">View</span>
                             </Button>
-                            <Button variant="ghost" size="sm">
-                              <MessageSquare className="h-4 w-4" />
+                            <Button variant="ghost" size="sm" className="mobile-button mobile-hide">
+                              <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
                             </Button>
                           </div>
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
-                </Table>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
 
-          <TabsContent value="classes" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">My Classes</h2>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
+          <TabsContent value="classes" className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="mobile-header font-bold">My Classes</h2>
+              <Button className="w-full sm:w-auto mobile-button">
+                <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                 Create New Class
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="mobile-grid">
               {teacherClasses.map((cls) => (
                 <Card key={cls.id} className="shadow-card">
                   <CardHeader>

@@ -157,3 +157,72 @@
     @apply text-lg;
   }
 }
+
+/* Enhanced mobile responsive utilities */
+.mobile-container {
+  @apply px-4 sm:px-6 lg:px-8;
+}
+
+.mobile-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6;
+}
+
+.mobile-card {
+  @apply p-4 sm:p-6;
+}
+
+.mobile-text {
+  @apply text-sm sm:text-base;
+}
+
+.mobile-button {
+  @apply text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2;
+}
+
+.mobile-header {
+  @apply text-lg sm:text-xl lg:text-2xl;
+}
+
+.mobile-stats-grid {
+  @apply grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6;
+}
+
+.mobile-table {
+  @apply text-xs sm:text-sm;
+}
+
+.mobile-hide {
+  @apply hidden sm:block;
+}
+
+.mobile-show {
+  @apply block sm:hidden;
+}
+
+.mobile-flex {
+  @apply flex-col sm:flex-row;
+}
+
+.mobile-space {
+  @apply space-y-4 sm:space-y-0 sm:space-x-4;
+}
+
+/* Dashboard mobile optimizations */
+.dashboard-sidebar {
+  @apply lg:col-span-1 order-first lg:order-last;
+}
+
+.dashboard-main {
+  @apply lg:col-span-2 order-last lg:order-first;
+}
+
+/* Tablet breakpoint improvements */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .tablet-grid {
+    @apply grid-cols-2;
+  }
+  
+  .tablet-text {
+    @apply text-base;
+  }
+}

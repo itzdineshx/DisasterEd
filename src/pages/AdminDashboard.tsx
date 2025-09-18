@@ -8,17 +8,19 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { useAdminData } from "@/hooks/useLocalStorage";
 
 const AdminDashboard = () => {
   const [selectedPeriod, setSelectedPeriod] = useState("30d");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
+  const { institutionStats, departmentData, recentActivity, alerts, updateStats, addActivity } = useAdminData();
 
-  // Mock data for analytics
+  // Dynamic stats from localStorage
   const overviewStats = [
-    { title: "Total Students", value: "2,847", change: "+12%", icon: Users, color: "primary" },
-    { title: "Active Teachers", value: "156", change: "+5%", icon: Users, color: "safe" },
-    { title: "Modules Completed", value: "8,432", change: "+24%", icon: BookOpen, color: "warning" },
-    { title: "Avg. Preparedness", value: "87%", change: "+8%", icon: Award, color: "primary" }
+    { title: "Total Students", value: institutionStats.totalStudents.toLocaleString(), change: "+12%", icon: Users, color: "primary" },
+    { title: "Active Teachers", value: institutionStats.activeTeachers.toString(), change: "+5%", icon: Users, color: "safe" },
+    { title: "Modules Completed", value: institutionStats.modulesCompleted.toLocaleString(), change: "+24%", icon: BookOpen, color: "warning" },
+    { title: "Avg. Preparedness", value: `${institutionStats.avgPreparedness}%`, change: "+8%", icon: Award, color: "primary" }
   ];
 
   const moduleEngagement = [
@@ -94,11 +96,11 @@ const AdminDashboard = () => {
         userRole="admin"
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto mobile-container py-4 sm:py-8">
         {/* Filters */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="mobile-flex gap-4 mb-6 sm:mb-8">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Select period" />
             </SelectTrigger>
             <SelectContent>
@@ -110,7 +112,7 @@ const AdminDashboard = () => {
           </Select>
 
           <Select value={selectedDepartment} onValueChange={setSelectedDepartment}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="Select department" />
             </SelectTrigger>
             <SelectContent>
@@ -123,20 +125,22 @@ const AdminDashboard = () => {
             </SelectContent>
           </Select>
 
-          <div className="flex gap-2 ml-auto">
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              More Filters
+          <div className="mobile-flex mobile-space w-full sm:w-auto sm:ml-auto">
+            <Button variant="outline" className="mobile-button w-full sm:w-auto">
+              <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+              <span className="mobile-hide">More Filters</span>
+              <span className="mobile-show">Filters</span>
             </Button>
-            <Button>
-              <Download className="h-4 w-4 mr-2" />
-              Export Report
+            <Button className="mobile-button w-full sm:w-auto">
+              <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+              <span className="mobile-hide">Export Report</span>
+              <span className="mobile-show">Export</span>
             </Button>
           </div>
         </div>
 
         {/* Overview Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="mobile-stats-grid mb-6 sm:mb-8">
           {overviewStats.map((stat, index) => {
             const IconComponent = stat.icon;
             return (
@@ -161,71 +165,77 @@ const AdminDashboard = () => {
           })}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="dashboard-main space-y-6 lg:space-y-8">
             {/* Module Engagement */}
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle>Module Engagement Overview</CardTitle>
+                <CardTitle className="mobile-header">Module Engagement Overview</CardTitle>
               </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={moduleEngagement}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis 
-                      dataKey="name" 
-                      angle={-45}
-                      textAnchor="end"
-                      height={100}
-                      fontSize={12}
-                    />
-                    <YAxis />
-                    <Tooltip />
-                    <Bar dataKey="completed" stackId="a" fill="hsl(var(--safe))" name="Completed" />
-                    <Bar dataKey="inProgress" stackId="a" fill="hsl(var(--warning))" name="In Progress" />
-                    <Bar dataKey="notStarted" stackId="a" fill="hsl(var(--muted))" name="Not Started" />
-                  </BarChart>
-                </ResponsiveContainer>
+              <CardContent className="mobile-card">
+                <div className="h-[250px] sm:h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={moduleEngagement}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis 
+                        dataKey="name" 
+                        angle={-45}
+                        textAnchor="end"
+                        height={80}
+                        fontSize={10}
+                        interval={0}
+                      />
+                      <YAxis fontSize={10} />
+                      <Tooltip />
+                      <Bar dataKey="completed" stackId="a" fill="hsl(var(--safe))" name="Completed" />
+                      <Bar dataKey="inProgress" stackId="a" fill="hsl(var(--warning))" name="In Progress" />
+                      <Bar dataKey="notStarted" stackId="a" fill="hsl(var(--muted))" name="Not Started" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
 
             {/* Drill Participation Trends */}
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle>Drill Participation Trends</CardTitle>
+                <CardTitle className="mobile-header">Drill Participation Trends</CardTitle>
               </CardHeader>
-              <CardContent>
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={drillParticipation}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Line type="monotone" dataKey="earthquakeDrills" stroke="hsl(var(--primary))" name="Earthquake Drills" strokeWidth={3} />
-                    <Line type="monotone" dataKey="fireDrills" stroke="hsl(var(--emergency))" name="Fire Drills" strokeWidth={3} />
-                  </LineChart>
-                </ResponsiveContainer>
+              <CardContent className="mobile-card">
+                <div className="h-[250px] sm:h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={drillParticipation}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="name" fontSize={10} />
+                      <YAxis fontSize={10} />
+                      <Tooltip />
+                      <Line type="monotone" dataKey="earthquakeDrills" stroke="hsl(var(--primary))" name="Earthquake Drills" strokeWidth={2} />
+                      <Line type="monotone" dataKey="fireDrills" stroke="hsl(var(--emergency))" name="Fire Drills" strokeWidth={2} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
               </CardContent>
             </Card>
 
             {/* Department Progress */}
             <Card className="shadow-card">
               <CardHeader>
-                <CardTitle>Department Progress</CardTitle>
+                <CardTitle className="mobile-header">Department Progress</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {departmentProgress.map((dept, index) => (
+              <CardContent className="mobile-card">
+                <div className="space-y-3 sm:space-y-4">
+                  {departmentData.map((dept, index) => (
                     <div key={index} className="space-y-2">
                       <div className="flex justify-between items-center">
-                        <span className="font-medium">{dept.name}</span>
+                        <span className="font-medium text-sm sm:text-base">{dept.name}</span>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm text-muted-foreground">{dept.students} students</span>
-                          <span className="font-bold text-primary">{dept.value}%</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground mobile-hide">{dept.students} students</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground mobile-show">{dept.students}</span>
+                          <span className="font-bold text-primary text-sm sm:text-base">{dept.value}%</span>
                         </div>
                       </div>
-                      <Progress value={dept.value} className="h-2" />
+                      <Progress value={dept.value} className="h-1.5 sm:h-2" />
                     </div>
                   ))}
                 </div>
@@ -234,7 +244,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="dashboard-sidebar space-y-4 sm:space-y-6">
             {/* Recent Activity */}
             <Card className="shadow-card">
               <CardHeader>

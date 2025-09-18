@@ -70,9 +70,9 @@ const StudentDashboard = () => {
         userRole="student"
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto mobile-container py-4 sm:py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="mobile-stats-grid mb-6 sm:mb-8">
           <Card>
             <CardContent className="flex items-center p-6">
               <div className="p-2 bg-primary/10 rounded-lg mr-4">
@@ -122,59 +122,66 @@ const StudentDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Learning Modules */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Learning Modules</h2>
-              <div className="flex space-x-2">
-                <Button variant="outline" asChild>
-                  <Link to="/progress-analytics">View Analytics</Link>
+          <div className="dashboard-main space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="mobile-header font-bold">Learning Modules</h2>
+              <div className="mobile-flex mobile-space w-full sm:w-auto">
+                <Button variant="outline" size="sm" className="mobile-button" asChild>
+                  <Link to="/progress-analytics">
+                    <span className="mobile-hide">View Analytics</span>
+                    <span className="mobile-show">Analytics</span>
+                  </Link>
                 </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/modules">View All</Link>
+                <Button variant="outline" size="sm" className="mobile-button" asChild>
+                  <Link to="/modules">
+                    <span className="mobile-hide">View All</span>
+                    <span className="mobile-show">All</span>
+                  </Link>
                 </Button>
               </div>
             </div>
 
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {moduleData.map((module) => (
                 <Card key={module.id} className="hover:shadow-card transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-start space-x-4 flex-1">
-                        <div className="text-3xl">{module.icon}</div>
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-2 mb-2">
-                            <h3 className="font-semibold text-lg">{module.title}</h3>
-                            <Badge variant="secondary" className={`text-${getStatusColor(module.status)}`}>
+                  <CardContent className="mobile-card">
+                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                      <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
+                        <div className="text-2xl sm:text-3xl flex-shrink-0">{module.icon}</div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                            <h3 className="font-semibold text-base sm:text-lg">{module.title}</h3>
+                            <Badge variant="secondary" className={`text-${getStatusColor(module.status)} w-fit`}>
                               {getStatusText(module.status)}
                             </Badge>
                           </div>
-                          <p className="text-muted-foreground mb-3">{module.description}</p>
+                          <p className="mobile-text text-muted-foreground mb-3 line-clamp-2 sm:line-clamp-none">{module.description}</p>
                           
-                          <div className="flex items-center space-x-4 text-sm text-muted-foreground mb-3">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground mb-3">
                             <span className="flex items-center">
-                              <Clock className="h-4 w-4 mr-1" />
+                              <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                               {module.duration}
                             </span>
-                            <span>{module.lessons} lessons</span>
+                            <span className="mobile-hide">{module.lessons} lessons</span>
+                            <span className="mobile-show">{module.lessons}L</span>
                           </div>
 
                           <div className="space-y-2">
-                            <div className="flex justify-between text-sm">
+                            <div className="flex justify-between text-xs sm:text-sm">
                               <span>Progress</span>
                               <span>{module.progress}%</span>
                             </div>
-                            <Progress value={module.progress} className="h-2" />
+                            <Progress value={module.progress} className="h-1.5 sm:h-2" />
                           </div>
                         </div>
                       </div>
                       
-                      <div className="ml-4">
-                        <Button size="sm" className="bg-primary hover:bg-primary/90" asChild>
+                      <div className="flex-shrink-0 w-full sm:w-auto">
+                        <Button size="sm" className="bg-primary hover:bg-primary/90 w-full sm:w-auto mobile-button" asChild>
                           <Link to="/modules">
-                            <Play className="h-4 w-4 mr-1" />
+                            <Play className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                             {module.status === "not-started" ? "Start" : "Continue"}
                           </Link>
                         </Button>
@@ -187,7 +194,7 @@ const StudentDashboard = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="dashboard-sidebar space-y-4 sm:space-y-6">
             {/* Weather Widget */}
             <WeatherWidget showAlerts={true} />
             

@@ -10,49 +10,24 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
+import { useOfficerData } from "@/hooks/useLocalStorage";
 
 const OfficerDashboard = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  const [alertLevel, setAlertLevel] = useState<'normal' | 'elevated' | 'high' | 'critical'>('normal');
+  const { incidents, personnel, alertLevel, resources, setAlertLevel, updatePersonnelStatus } = useOfficerData();
 
-  // Mock data for emergency management
+  // Dynamic stats from localStorage
   const emergencyStats = [
-    { title: "Active Incidents", value: "2", change: "+1", icon: AlertTriangle, color: "emergency" },
-    { title: "Personnel Available", value: "47", change: "-3", icon: Users, color: "safe" },
+    { title: "Active Incidents", value: incidents.filter(i => i.status !== 'Resolved').length.toString(), change: "+1", icon: AlertTriangle, color: "emergency" },
+    { title: "Personnel Available", value: personnel.filter(p => p.status === 'On Duty').length.toString(), change: "-3", icon: Users, color: "safe" },
     { title: "Communication Channels", value: "8", change: "0", icon: Radio, color: "primary" },
     { title: "Emergency Shelters", value: "12", change: "+2", icon: Shield, color: "warning" }
   ];
 
-  const activeIncidents = [
-    {
-      id: "INC-001",
-      type: "Fire Emergency",
-      location: "Building A - 3rd Floor",
-      severity: "high",
-      status: "In Progress",
-      responders: 6,
-      startTime: "14:23",
-      estimatedResolution: "15:45"
-    },
-    {
-      id: "INC-002", 
-      type: "Medical Emergency",
-      location: "Campus Quad",
-      severity: "medium",
-      status: "Responding",
-      responders: 3,
-      startTime: "14:45",
-      estimatedResolution: "15:15"
-    }
-  ];
+  const activeIncidents = incidents.filter(incident => incident.status !== 'Resolved');
 
-  const emergencyPersonnel = [
-    { name: "Sarah Mitchell", role: "Fire Chief", status: "On Duty", location: "Station 1", contact: "555-0101" },
-    { name: "Mike Rodriguez", role: "EMT Lead", status: "Responding", location: "Building A", contact: "555-0102" },
-    { name: "Jennifer Lee", role: "Security Captain", status: "On Duty", location: "Command Center", contact: "555-0103" },
-    { name: "David Thompson", role: "Facilities Manager", status: "On Call", location: "Campus Wide", contact: "555-0104" }
-  ];
+  const emergencyPersonnel = personnel;
 
   const handleEmergencyBroadcast = () => {
     addNotification({
@@ -101,22 +76,22 @@ const OfficerDashboard = () => {
         userRole="officer"
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <main className="max-w-7xl mx-auto mobile-container py-4 sm:py-8">
         {/* Alert Level Indicator */}
-        <Alert className={`mb-6 ${getAlertLevelColor(alertLevel)}`}>
+        <Alert className={`mb-4 sm:mb-6 ${getAlertLevelColor(alertLevel)}`}>
           <AlertTriangle className="h-4 w-4" />
-          <AlertDescription className="flex items-center justify-between">
-            <span className="font-medium">
+          <AlertDescription className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <span className="font-medium text-sm sm:text-base">
               Current Alert Level: {alertLevel.toUpperCase()}
             </span>
-            <div className="flex space-x-2">
+            <div className="flex flex-wrap gap-2">
               {['normal', 'elevated', 'high', 'critical'].map((level) => (
                 <Button
                   key={level}
                   variant={alertLevel === level ? "default" : "outline"}
                   size="sm"
                   onClick={() => handleAlertLevelChange(level as any)}
-                  className="text-xs"
+                  className="text-xs mobile-button"
                 >
                   {level}
                 </Button>
@@ -126,7 +101,7 @@ const OfficerDashboard = () => {
         </Alert>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="mobile-stats-grid mb-6 sm:mb-8">
           {emergencyStats.map((stat, index) => {
             const IconComponent = stat.icon;
             return (
@@ -151,7 +126,7 @@ const OfficerDashboard = () => {
         </div>
 
         {/* Emergency Controls */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
+        <div className="mobile-grid mb-6 sm:mb-8">
           <Card className="bg-gradient-emergency text-white">
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -229,52 +204,100 @@ const OfficerDashboard = () => {
           </Card>
         </div>
 
-        <Tabs defaultValue="incidents" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="incidents">Active Incidents</TabsTrigger>
-            <TabsTrigger value="personnel">Emergency Personnel</TabsTrigger>
-            <TabsTrigger value="resources">Resources & Equipment</TabsTrigger>
-            <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
+        <Tabs defaultValue="incidents" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
+            <TabsTrigger value="incidents" className="text-xs sm:text-sm">
+              <span className="mobile-hide">Active Incidents</span>
+              <span className="mobile-show">Incidents</span>
+            </TabsTrigger>
+            <TabsTrigger value="personnel" className="text-xs sm:text-sm">
+              <span className="mobile-hide">Emergency Personnel</span>
+              <span className="mobile-show">Personnel</span>
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="text-xs sm:text-sm">
+              <span className="mobile-hide">Resources & Equipment</span>
+              <span className="mobile-show">Resources</span>
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="text-xs sm:text-sm">
+              <span className="mobile-hide">Reports & Analytics</span>
+              <span className="mobile-show">Reports</span>
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="incidents" className="space-y-6">
+          <TabsContent value="incidents" className="space-y-4 sm:space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center">
-                    <AlertTriangle className="h-5 w-5 mr-2" />
+                <CardTitle className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <span className="flex items-center mobile-header">
+                    <AlertTriangle className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                     Active Emergency Incidents
                   </span>
-                  <Badge variant="secondary" className="bg-emergency/10 text-emergency">
+                  <Badge variant="secondary" className="bg-emergency/10 text-emergency w-fit">
                     {activeIncidents.length} Active
                   </Badge>
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Incident ID</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Severity</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Responders</TableHead>
-                      <TableHead>Duration</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {activeIncidents.map((incident) => (
-                      <TableRow key={incident.id}>
-                        <TableCell className="font-medium">{incident.id}</TableCell>
-                        <TableCell>{incident.type}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center">
-                            <MapPin className="h-3 w-3 mr-1" />
-                            {incident.location}
-                          </div>
-                        </TableCell>
+              <CardContent className="mobile-card">
+                <div className="overflow-x-auto">
+                  <Table className="mobile-table">
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>ID</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead className="mobile-hide">Location</TableHead>
+                        <TableHead>Severity</TableHead>
+                        <TableHead className="mobile-hide">Status</TableHead>
+                        <TableHead className="mobile-hide">Responders</TableHead>
+                        <TableHead className="mobile-hide">Duration</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {activeIncidents.map((incident) => (
+                        <TableRow key={incident.id}>
+                          <TableCell className="font-medium">{incident.id}</TableCell>
+                          <TableCell>{incident.type}</TableCell>
+                          <TableCell className="mobile-hide">
+                            <div className="flex items-center">
+                              <MapPin className="h-3 w-3 mr-1" />
+                              {incident.location}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge 
+                              variant="outline" 
+                              className={getSeverityColor(incident.severity)}
+                            >
+                              {incident.severity}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="mobile-hide">
+                            <Badge variant="secondary">
+                              {incident.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="mobile-hide">{incident.responders} personnel</TableCell>
+                          <TableCell className="mobile-hide">
+                            <div className="flex items-center text-sm text-muted-foreground">
+                              <Clock className="h-3 w-3 mr-1" />
+                              {incident.startTime} - {incident.estimatedResolution}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col sm:flex-row gap-1">
+                              <Button variant="outline" size="sm" className="mobile-button">
+                                View
+                              </Button>
+                              <Button variant="outline" size="sm" className="mobile-button mobile-hide">
+                                Update
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
                         <TableCell>
                           <Badge 
                             variant="outline" 
