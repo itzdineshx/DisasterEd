@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, BookOpen, Clock, MessageSquare, Plus, Eye, Edit, Trash2 } from "lucide-react";
+import { Users, BookOpen, Clock, MessageSquare, Plus, Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,31 +7,158 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTeacherData } from "@/hooks/useLocalStorage";
-import { mockModules, mockUsers } from "@/utils/mockData";
+import { useData } from "@/contexts/DataContext";
+import { Class, Student } from "@/data/teacherData";
+import { mockModules } from "@/utils/mockData";
 
 const TeacherDashboard = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [selectedClass, setSelectedClass] = useState("all");
-  const { classes: teacherClasses, studentData, updateClass } = useTeacherData();
+  const { students, classes, modules } = useData();
+  
+  // Form states for new class/student
+  const [newClass, setNewClass] = useState<Partial<Class>>({
+    name: "",
+    semester: "Fall 2025",
+    students: 0,
+    averageProgress: 0,
+    modules: []
+  });
 
+  const [newStudent, setNewStudent] = useState<Partial<Student>>({
+    name: "",
+    email: "",
+    class: "",
+    modulesCompleted: 0,
+    totalModules: 10,
+    averageScore: 0,
+    status: "active"
+  });
+
+  // CRUD handlers for classes
+  const handleCreateClass = () => {
+    if (!newClass.name) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const createdClass = classes.create({
+      ...newClass as Omit<Class, "id">,
+      startDate: new Date().toISOString(),
+      endDate: new Date(Date.now() + 7776000000).toISOString(), // 90 days from now
+    });
+
+    toast({
+      title: "Class Created",
+      description: `New class "${createdClass.name}" has been created.`
+    });
+  };
+
+  const handleUpdateClass = (id: string, updates: Partial<Class>) => {
+    classes.update(id, updates);
+    toast({
+      title: "Class Updated",
+      description: `Class has been updated successfully.`
+    });
+  };
+
+  const handleDeleteClass = (id: string) => {
+    classes.remove(id);
+    toast({
+      title: "Class Deleted",
+      description: `Class has been removed.`
+    });
+  };
+
+  // CRUD handlers for students
+  const handleCreateStudent = () => {
+    if (!newStudent.name || !newStudent.email || !newStudent.class) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const createdStudent = students.create({
+      ...newStudent as Omit<Student, "id">,
+      lastActive: new Date().toISOString(),
+    });
+
+    toast({
+      title: "Student Added",
+      description: `${createdStudent.name} has been added to the class.`
+    });
+  };
+
+  const handleUpdateStudent = (id: string, updates: Partial<Student>) => {
+    students.update(id, updates);
+    toast({
+      title: "Student Updated",
+      description: "Student information has been updated."
+    });
+  };
+
+  const handleDeleteStudent = (id: string) => {
+    students.remove(id);
+    toast({
+      title: "Student Removed",
+      description: "Student has been removed from the class."
+    });
+  };
+
+  const allStudents = students.getAll();
+  const allClasses = classes.getAll();
+  
   const classStats = [
-    { title: "Total Students", value: "105", change: "+8%", icon: Users, color: "primary" },
-    { title: "Active Classes", value: "3", change: "0%", icon: BookOpen, color: "safe" },
-    { title: "Avg. Completion", value: "78%", change: "+12%", icon: Clock, color: "warning" },
-    { title: "Student Messages", value: "12", change: "+3", icon: MessageSquare, color: "accent" }
+    { 
+      title: "Total Students", 
+      value: allStudents.length.toString(), 
+      change: "", 
+      icon: Users, 
+      color: "primary" 
+    },
+    { 
+      title: "Active Classes", 
+      value: allClasses.length.toString(), 
+      change: "", 
+      icon: BookOpen, 
+      color: "safe" 
+    },
+    { 
+      title: "Avg. Completion", 
+      value: Math.round(allStudents.reduce((acc, student) => 
+        acc + (student.modulesCompleted / student.totalModules) * 100, 0
+      ) / allStudents.length || 0) + "%",
+      change: "", 
+      icon: Clock, 
+      color: "warning" 
+    },
+    { 
+      title: "Active Students", 
+      value: allStudents.filter(s => s.status === "active").length.toString(), 
+      change: "", 
+      icon: MessageSquare, 
+      color: "accent" 
+    }
   ];
 
   // Filter students by selected class
-  const filteredStudents = selectedClass === "all" 
-    ? mockUsers.filter(user => user.role === 'student')
-    : mockUsers.filter(user => user.role === 'student').filter(student =>
-        selectedClass === "safety-101" && student.class === "Safety 101" ||
-        selectedClass === "emergency-response" && student.class === "Emergency Response" ||
-        selectedClass === "advanced-safety" && student.class === "Advanced Safety"
-      );
+  const filteredStudents = selectedClass === "all"
+    ? students.getAll()
+    : students.getAll().filter(student => student.class === selectedClass);
 
   const getScoreColor = (score: number) => {
     if (score >= 90) return "text-safe";
@@ -92,17 +219,70 @@ const TeacherDashboard = () => {
             {/* Class Filter */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="mobile-header font-bold">Student Progress</h2>
-              <Select value={selectedClass} onValueChange={setSelectedClass}>
-                <SelectTrigger className="w-full sm:w-48">
-                  <SelectValue placeholder="Select class" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Classes</SelectItem>
-                  {teacherClasses.map(cls => (
-                    <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-4">
+                <Select value={selectedClass} onValueChange={setSelectedClass}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Select class" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Classes</SelectItem>
+                    {classes.getAll().map(cls => (
+                      <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Student
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Student</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <Label>Student Name</Label>
+                        <Input
+                          value={newStudent.name}
+                          onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                          placeholder="Enter student name"
+                        />
+                      </div>
+                      <div>
+                        <Label>Email</Label>
+                        <Input
+                          value={newStudent.email}
+                          onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                          placeholder="student@example.com"
+                        />
+                      </div>
+                      <div>
+                        <Label>Class</Label>
+                        <Select 
+                          value={newStudent.class} 
+                          onValueChange={(value) => setNewStudent({ ...newStudent, class: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {classes.getAll().map(cls => (
+                              <SelectItem key={cls.id} value={cls.id}>{cls.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <DialogFooter>
+                      <Button onClick={handleCreateStudent}>Add Student</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </div>
             </div>
 
             {/* Student Table */}
@@ -124,50 +304,67 @@ const TeacherDashboard = () => {
                       </TableRow>
                     </TableHeader>
                   <TableBody>
-                    {filteredStudents.map((student) => (
-                      <TableRow key={student.id}>
-                        <TableCell>
-                          <div>
-                            <div className="font-medium text-sm">{student.name}</div>
-                            <div className="text-xs text-muted-foreground mobile-hide">{student.email}</div>
-                            <div className="mobile-show">
-                              <Badge variant="outline" className="text-xs mt-1">{student.class}</Badge>
+                    {filteredStudents.map((student) => {
+                      const studentClass = classes.getAll().find(c => c.id === student.class);
+                      return (
+                        <TableRow key={student.id}>
+                          <TableCell>
+                            <div>
+                              <div className="font-medium text-sm">{student.name}</div>
+                              <div className="text-xs text-muted-foreground mobile-hide">{student.email}</div>
+                              <div className="mobile-show">
+                                <Badge variant="outline" className="text-xs mt-1">
+                                  {studentClass?.name || 'Unknown Class'}
+                                </Badge>
+                              </div>
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="mobile-hide">
-                          <Badge variant="outline">{student.class}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <div className="space-y-1">
-                            <div className="flex justify-between text-sm">
-                              <span>{student.modulesCompleted}/{student.totalModules}</span>
-                              <span>{Math.round((student.modulesCompleted / student.totalModules) * 100)}%</span>
+                          </TableCell>
+                          <TableCell className="mobile-hide">
+                            <Badge variant="outline">
+                              {studentClass?.name || 'Unknown Class'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="space-y-1">
+                              <div className="flex justify-between text-sm">
+                                <span>{student.modulesCompleted}/{student.totalModules}</span>
+                                <span>{Math.round((student.modulesCompleted / student.totalModules) * 100)}%</span>
+                              </div>
+                              <Progress value={(student.modulesCompleted / student.totalModules) * 100} className="h-2" />
                             </div>
-                            <Progress value={(student.modulesCompleted / student.totalModules) * 100} className="h-2" />
-                          </div>
-                        </TableCell>
-                        <TableCell className="mobile-hide">
-                          <span className={`font-medium ${getScoreColor(student.averageScore)}`}>
-                            {student.averageScore}%
-                          </span>
-                        </TableCell>
-                        <TableCell className="mobile-hide text-sm text-muted-foreground">
-                          {new Date(student.lastActive).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                            <Button variant="ghost" size="sm" className="mobile-button">
-                              <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
-                              <span className="mobile-show ml-1">View</span>
-                            </Button>
-                            <Button variant="ghost" size="sm" className="mobile-button mobile-hide">
-                              <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                          </TableCell>
+                          <TableCell className="mobile-hide">
+                            <span className={`font-medium ${getScoreColor(student.averageScore)}`}>
+                              {student.averageScore}%
+                            </span>
+                          </TableCell>
+                          <TableCell className="mobile-hide text-sm text-muted-foreground">
+                            {new Date(student.lastActive).toLocaleDateString()}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                onClick={() => handleUpdateStudent(student.id, { 
+                                  status: student.status === 'active' ? 'inactive' : 'active' 
+                                })}
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm"
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDeleteStudent(student.id)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                   </Table>
                 </div>
@@ -178,14 +375,44 @@ const TeacherDashboard = () => {
           <TabsContent value="classes" className="space-y-4 sm:space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="mobile-header font-bold">My Classes</h2>
-              <Button className="w-full sm:w-auto mobile-button">
-                <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
-                Create New Class
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="w-full sm:w-auto mobile-button">
+                    <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+                    Create New Class
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New Class</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label>Class Name</Label>
+                      <Input
+                        value={newClass.name}
+                        onChange={(e) => setNewClass({ ...newClass, name: e.target.value })}
+                        placeholder="Enter class name"
+                      />
+                    </div>
+                    <div>
+                      <Label>Semester</Label>
+                      <Input
+                        value={newClass.semester}
+                        onChange={(e) => setNewClass({ ...newClass, semester: e.target.value })}
+                        placeholder="e.g., Fall 2025"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={handleCreateClass}>Create Class</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
 
             <div className="mobile-grid">
-              {teacherClasses.map((cls) => (
+              {classes.getAll().map((cls) => (
                 <Card key={cls.id} className="shadow-card">
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
@@ -203,19 +430,29 @@ const TeacherDashboard = () => {
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
                           <span>Average Progress</span>
-                          <span>76%</span>
+                          <span>{cls.averageProgress}%</span>
                         </div>
-                        <Progress value={76} className="h-2" />
+                        <Progress value={cls.averageProgress} className="h-2" />
                       </div>
 
                       <div className="flex space-x-2">
-                        <Button variant="outline" size="sm" className="flex-1">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => setSelectedClass(cls.id)}
+                        >
                           <Eye className="h-4 w-4 mr-1" />
-                          View
+                          View Students
                         </Button>
-                        <Button variant="outline" size="sm" className="flex-1">
-                          <Edit className="h-4 w-4 mr-1" />
-                          Edit
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1" 
+                          onClick={() => handleDeleteClass(cls.id)}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
                         </Button>
                       </div>
                     </div>

@@ -531,39 +531,105 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* About Developer Section */}
+      {/* Team Section */}
       <section className="py-16 sm:py-20 bg-gradient-to-br from-slate-50 via-indigo-50 to-purple-50 dark:from-slate-900 dark:via-indigo-950 dark:to-purple-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-6 mb-12 animate-fade-in">
             <Badge variant="outline" className="text-primary px-4 py-2 bg-white/50 dark:bg-card/50 backdrop-blur-sm">
-              👨‍💻 Meet the Developer
+              👨‍💻 Meet the Developers
             </Badge>
             <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               Built with Passion for Safety
             </h2>
-            <div className="max-w-3xl mx-auto">
-              <Card className="p-8 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/40 transition-all hover-scale shadow-xl">
-                <div className="flex flex-col items-center space-y-4">
-                  <div className="w-24 h-24 bg-gradient-to-r from-primary to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-                    <span className="text-white font-bold text-2xl">DS</span>
-                  </div>
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold text-primary mb-2">DINESH S</h3>
-                    <p className="text-lg text-muted-foreground mb-4">Computer Science Engineering Student</p>
-                    <div className="flex items-center justify-center space-x-2 text-purple-600 dark:text-purple-400">
-                      <MapPin className="h-4 w-4" />
-                      <span className="font-medium">DMI College of Engineering, Chennai</span>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  id: 1,
+                  name: "Member 1",
+                  role: "Full Stack Developer",
+                  expertise: ["React", "Node.js", "MongoDB"],
+                  imageUrl: "/team/member1.jpg" // You can add these images later
+                },
+                {
+                  id: 2,
+                  name: "Member 2",
+                  role: "UI/UX Designer",
+                  expertise: ["Figma", "User Research", "Prototyping"],
+                  imageUrl: "/team/member2.jpg"
+                },
+                {
+                  id: 3,
+                  name: "Member 3",
+                  role: "Emergency Systems Specialist",
+                  expertise: ["Safety Protocols", "Risk Assessment"],
+                  imageUrl: "/team/member3.jpg"
+                },
+                {
+                  id: 4,
+                  name: "Member 4",
+                  role: "AI Integration Expert",
+                  expertise: ["Machine Learning", "NLP", "Python"],
+                  imageUrl: "/team/member4.jpg"
+                },
+                {
+                  id: 5,
+                  name: "Member 5",
+                  role: "DevOps Engineer",
+                  expertise: ["AWS", "Docker", "CI/CD"],
+                  imageUrl: "/team/member5.jpg"
+                },
+                {
+                  id: 6,
+                  name: "Member 6",
+                  role: "Security Specialist",
+                  expertise: ["Cybersecurity", "Data Protection"],
+                  imageUrl: "/team/member6.jpg"
+                }
+              ].map((member) => (
+                <Card key={member.id} className="p-6 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-2 border-primary/20 hover:border-primary/40 transition-all hover-scale shadow-xl">
+                  <div className="flex flex-col items-center space-y-4">
+                    <div className="relative w-24 h-24 rounded-full overflow-hidden ring-2 ring-primary/20">
+                      {/* Placeholder until image is added */}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center">
+                        <span className="text-white text-xl font-bold">{member.name.split(' ')[1]}</span>
+                      </div>
+                      {/* Uncomment when adding real images */}
+                      {/* <img
+                        src={member.imageUrl}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      /> */}
+                    </div>
+                    <div className="text-center space-y-2">
+                      <h3 className="font-semibold text-lg text-primary">{member.name}</h3>
+                      <p className="text-sm font-medium text-purple-600 dark:text-purple-400">{member.role}</p>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {member.expertise.map((skill, index) => (
+                          <Badge 
+                            key={index}
+                            variant="secondary" 
+                            className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30"
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                  <p className="text-center text-muted-foreground max-w-2xl leading-relaxed">
-                    Passionate about leveraging technology to create safer communities. This platform combines modern web technologies 
-                    with real-world emergency preparedness to make disaster education accessible to everyone across India.
+                </Card>
+              ))}
+            </div>
+            <div className="mt-12 max-w-3xl mx-auto">
+              <Card className="p-8 bg-white/70 dark:bg-card/70 backdrop-blur-sm border-2 border-primary/20">
+                <div className="text-center space-y-4">
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    Our diverse team brings together expertise in technology, emergency management, and education to create a comprehensive disaster preparedness platform for India.
                   </p>
-                  <div className="flex flex-wrap gap-2 justify-center pt-4">
-                    <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30">React & TypeScript</Badge>
-                    <Badge variant="secondary" className="bg-gradient-to-r from-green-100 to-teal-100 dark:from-green-900/30 dark:to-teal-900/30">AI Integration</Badge>
-                    <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30">Emergency Systems</Badge>
-                    <Badge variant="secondary" className="bg-gradient-to-r from-orange-100 to-red-100 dark:from-orange-900/30 dark:to-red-900/30">Real-time APIs</Badge>
+                  <div className="flex flex-wrap gap-3 justify-center">
+                    <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-indigo-100">Full Stack Development</Badge>
+                    <Badge variant="secondary" className="bg-gradient-to-r from-green-100 to-teal-100">Emergency Systems</Badge>
+                    <Badge variant="secondary" className="bg-gradient-to-r from-purple-100 to-pink-100">AI & Machine Learning</Badge>
+                    <Badge variant="secondary" className="bg-gradient-to-r from-orange-100 to-red-100">UI/UX Design</Badge>
                   </div>
                 </div>
               </Card>

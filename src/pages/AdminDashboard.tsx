@@ -48,13 +48,7 @@ const AdminDashboard = () => {
     { name: "May", earthquakeDrills: 61, fireDrills: 44, totalStudents: 2847 }
   ];
 
-  const recentActivity = [
-    { type: "drill", title: "Fire Drill - Engineering Building", time: "2 hours ago", status: "completed", participants: 487 },
-    { type: "quiz", title: "Earthquake Safety Quiz", time: "4 hours ago", status: "active", participants: 234 },
-    { type: "alert", title: "Weather Alert Issued", time: "1 day ago", status: "resolved", participants: 2847 },
-    { type: "module", title: "New Tornado Safety Module", time: "2 days ago", status: "published", participants: 0 },
-    { type: "certification", title: "Medical Emergency Certifications", time: "3 days ago", status: "awarded", participants: 98 }
-  ];
+  // Using recentActivity from useAdminData() hook
 
   const topPerformers = [
     { name: "Sarah Johnson", department: "Medicine", score: 98, modules: 8, badges: 12 },

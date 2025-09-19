@@ -10,24 +10,87 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/hooks/useNotifications";
-import { useOfficerData } from "@/hooks/useLocalStorage";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+import { useData } from "@/contexts/DataContext";
+import type { Incident, Personnel } from "@/hooks/usePersistentStore";
 
 const OfficerDashboard = () => {
   const { user } = useAuth();
   const { addNotification } = useNotifications();
-  const { incidents, personnel, alertLevel, resources, setAlertLevel, updatePersonnelStatus } = useOfficerData();
+  const { toast } = useToast();
+  const { incidents, personnel } = useData();
+  const [alertLevel, setAlertLevel] = useState<'normal' | 'elevated' | 'high' | 'critical'>('normal');
+  
+  // Form states for new incident
+  const [newIncident, setNewIncident] = useState<Partial<Incident>>({
+    type: '',
+    location: '',
+    severity: 'medium',
+    status: 'Active',
+    responders: 1,
+  });
+
+  const handleCreateIncident = () => {
+    if (!newIncident.type || !newIncident.location) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const createdIncident = incidents.create({
+      ...newIncident as Omit<Incident, 'id'>,
+      startTime: new Date().toISOString(),
+      estimatedResolution: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
+    });
+
+    toast({
+      title: "Incident Created",
+      description: `New incident ${createdIncident.id} has been created.`
+    });
+  };
+
+  const handleUpdateIncidentStatus = (id: string, status: 'Active' | 'Resolved' | 'Pending') => {
+    incidents.update(id, { status });
+    toast({
+      title: "Incident Updated",
+      description: `Incident ${id} status changed to ${status}.`
+    });
+  };
+
+  const handleDeleteIncident = (id: string) => {
+    incidents.remove(id);
+    toast({
+      title: "Incident Deleted",
+      description: `Incident ${id} has been removed.`
+    });
+  };
+
+  // Similar handlers for personnel management
+  const handleUpdatePersonnelStatus = (id: string, status: 'On Duty' | 'Off Duty' | 'Responding') => {
+    personnel.update(id, { status });
+    toast({
+      title: "Personnel Status Updated",
+      description: `Personnel status updated to ${status}.`
+    });
+  };
 
   // Dynamic stats from localStorage
   const emergencyStats = [
-    { title: "Active Incidents", value: incidents.filter(i => i.status !== 'Resolved').length.toString(), change: "+1", icon: AlertTriangle, color: "emergency" },
-    { title: "Personnel Available", value: personnel.filter(p => p.status === 'On Duty').length.toString(), change: "-3", icon: Users, color: "safe" },
+    { title: "Active Incidents", value: incidents.data.filter(i => i.status !== 'Resolved').length.toString(), change: "+1", icon: AlertTriangle, color: "emergency" },
+    { title: "Personnel Available", value: personnel.data.filter(p => p.status === 'On Duty').length.toString(), change: "-3", icon: Users, color: "safe" },
     { title: "Communication Channels", value: "8", change: "0", icon: Radio, color: "primary" },
     { title: "Emergency Shelters", value: "12", change: "+2", icon: Shield, color: "warning" }
   ];
 
-  const activeIncidents = incidents.filter(incident => incident.status !== 'Resolved');
+  const activeIncidents = incidents.data.filter(incident => incident.status !== 'Resolved');
 
-  const emergencyPersonnel = personnel;
+  const emergencyPersonnel = personnel.data;
 
   const handleEmergencyBroadcast = () => {
     addNotification({
@@ -77,6 +140,68 @@ const OfficerDashboard = () => {
       />
 
       <main className="max-w-7xl mx-auto mobile-container py-4 sm:py-8">
+        {/* New Incident Dialog */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="default" className="mb-4">
+              <AlertTriangle className="mr-2 h-4 w-4" />
+              Create New Incident
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Create New Incident</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <label className="text-sm font-medium">Type</label>
+                <Input 
+                  value={newIncident.type}
+                  onChange={(e) => setNewIncident(prev => ({ ...prev, type: e.target.value }))}
+                  placeholder="Fire, Medical, etc."
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Location</label>
+                <Input 
+                  value={newIncident.location}
+                  onChange={(e) => setNewIncident(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="Building, Floor, Room"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Severity</label>
+                <Select 
+                  value={newIncident.severity}
+                  onValueChange={(value: any) => setNewIncident(prev => ({ ...prev, severity: value }))}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select severity" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="low">Low</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High</SelectItem>
+                    <SelectItem value="critical">Critical</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-sm font-medium">Number of Responders</label>
+                <Input 
+                  type="number"
+                  value={newIncident.responders}
+                  onChange={(e) => setNewIncident(prev => ({ ...prev, responders: parseInt(e.target.value) }))}
+                  min={1}
+                />
+              </div>
+              <Button onClick={handleCreateIncident} className="w-full">
+                Create Incident
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Alert Level Indicator */}
         <Alert className={`mb-4 sm:mb-6 ${getAlertLevelColor(alertLevel)}`}>
           <AlertTriangle className="h-4 w-4" />
@@ -284,12 +409,30 @@ const OfficerDashboard = () => {
                             </div>
                           </TableCell>
                           <TableCell>
-                            <div className="flex flex-col sm:flex-row gap-1">
-                              <Button variant="outline" size="sm" className="mobile-button">
-                                View
+                            <div className="flex flex-wrap gap-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleUpdateIncidentStatus(incident.id, 'Resolved')}
+                                className="mobile-button"
+                              >
+                                Resolve
                               </Button>
-                              <Button variant="outline" size="sm" className="mobile-button mobile-hide">
-                                Update
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleUpdateIncidentStatus(incident.id, incident.status === 'Active' ? 'Pending' : 'Active')}
+                                className="mobile-button"
+                              >
+                                {incident.status === 'Active' ? 'Pause' : 'Resume'}
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDeleteIncident(incident.id)}
+                                className="mobile-button mobile-hide"
+                              >
+                                Delete
                               </Button>
                             </div>
                           </TableCell>
@@ -298,40 +441,6 @@ const OfficerDashboard = () => {
                     </TableBody>
                   </Table>
                 </div>
-                        <TableCell>
-                          <Badge 
-                            variant="outline" 
-                            className={getSeverityColor(incident.severity)}
-                          >
-                            {incident.severity}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">
-                            {incident.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>{incident.responders} personnel</TableCell>
-                        <TableCell>
-                          <div className="flex items-center text-sm text-muted-foreground">
-                            <Clock className="h-3 w-3 mr-1" />
-                            {incident.startTime} - {incident.estimatedResolution}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-1">
-                            <Button variant="outline" size="sm">
-                              View
-                            </Button>
-                            <Button variant="outline" size="sm">
-                              Update
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
               </CardContent>
             </Card>
           </TabsContent>
@@ -493,6 +602,29 @@ const OfficerDashboard = () => {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* Built with Passion for Safety Team Section */}
+        <Card className="mt-8">
+          <CardHeader>
+            <CardTitle className="text-center text-2xl">Built with Passion for Safety</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+              {[1, 2, 3, 4, 5, 6].map((member) => (
+                <div key={member} className="flex flex-col items-center p-4 rounded-lg border bg-card/50 hover:bg-accent/50 transition-colors">
+                  <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-3 ring-2 ring-primary/20">
+                    <Users className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-semibold text-center">Member {member}</h3>
+                  <p className="text-sm text-muted-foreground text-center mt-1">Safety Expert</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-sm text-muted-foreground mt-8 font-medium">
+              Dedicated to making our campus safer, one innovation at a time.
+            </p>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );
