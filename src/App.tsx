@@ -15,7 +15,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ProgressAnalytics from "./pages/ProgressAnalytics";
 import Modules from "./pages/Modules";
-import Quiz from "./pages/Quiz";
+import ModuleDetail from "./pages/ModuleDetail";
 import DrillSimulator from "./pages/DrillSimulator";
 import Emergency from "./pages/Emergency";
 import NotFound from "./pages/NotFound";
@@ -26,6 +26,7 @@ import OfficerDashboard from "./pages/OfficerDashboard";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import EmergencyMap from "./pages/EmergencyMap";
+import ComplexityDemo from "./components/ComplexityDemo";
 
 const queryClient = new QueryClient();
 
@@ -70,9 +71,9 @@ const App = () => (
               <Modules />
             </ProtectedRoute>
           } />
-          <Route path="/quiz/:moduleId" element={
+          <Route path="/module/:id" element={
             <ProtectedRoute>
-              <Quiz />
+              <ModuleDetail />
             </ProtectedRoute>
           } />
           <Route path="/drill-simulator" element={
@@ -80,7 +81,13 @@ const App = () => (
               <DrillSimulator />
             </ProtectedRoute>
           } />
+          <Route path="/drill-simulator/:moduleId" element={
+            <ProtectedRoute>
+              <DrillSimulator />
+            </ProtectedRoute>
+          } />
           <Route path="/emergency" element={<Emergency />} />
+          <Route path="/complexity-demo" element={<ComplexityDemo />} />
           <Route path="/real-time-alerts" element={<RealTimeAlerts />} />
           <Route path="/geo-location-tips" element={<GeoLocationTips />} />
           <Route path="/live-communication" element={<LiveCommunication />} />

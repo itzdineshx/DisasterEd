@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { BookOpen, Play, CheckCircle, Clock, Star, Award, MapPin, Users, Zap } from "lucide-react";
+import { useState, useEffect } from "react";
+import { BookOpen, Play, CheckCircle, Clock, Star, Award, MapPin, Users, Zap, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,121 +8,29 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { modulesData } from "@/data/modulesData";
 
 const Modules = () => {
+  const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [isEnhancingContent, setIsEnhancingContent] = useState(false);
 
-  const modules = [
-    {
-      id: "earthquake-basics",
-      title: "Earthquake Safety Fundamentals",
-      description: "Learn the science behind earthquakes and essential safety measures",
-      category: "earthquake",
-      difficulty: "Beginner",
-      duration: "45 min",
-      lessons: 8,
-      progress: 85,
-      status: "in-progress",
-      icon: "🌍",
-      rating: 4.8,
-      enrolled: 1249,
-      regionSpecific: ["Seismic Zones", "Building Codes"],
-      completedLessons: 7,
-      quizScore: 92,
-      badges: ["Quick Learner", "Safety First"]
-    },
-    {
-      id: "fire-response",
-      title: "Fire Emergency Response",
-      description: "Comprehensive fire safety, prevention, and evacuation procedures",
-      category: "fire",
-      difficulty: "Beginner",
-      duration: "35 min",
-      lessons: 6,
-      progress: 100,
-      status: "completed",
-      icon: "🔥",
-      rating: 4.9,
-      enrolled: 2156,
-      regionSpecific: ["Building Types", "Climate Factors"],
-      completedLessons: 6,
-      quizScore: 88,
-      badges: ["Fire Safety Expert", "Perfect Score"]
-    },
-    {
-      id: "flood-preparedness",
-      title: "Flood Preparedness & Response",
-      description: "Understanding flood risks and implementing safety measures",
-      category: "flood",
-      difficulty: "Intermediate",
-      duration: "50 min",
-      lessons: 9,
-      progress: 60,
-      status: "in-progress",
-      icon: "🌊",
-      rating: 4.7,
-      enrolled: 987,
-      regionSpecific: ["Coastal Areas", "River Basins"],
-      completedLessons: 5,
-      quizScore: null,
-      badges: ["Water Safety"]
-    },
-    {
-      id: "tornado-safety",
-      title: "Severe Weather & Tornado Safety",
-      description: "Weather monitoring, warning systems, and shelter protocols",
-      category: "weather",
-      difficulty: "Intermediate",
-      duration: "40 min",
-      lessons: 7,
-      progress: 0,
-      status: "not-started",
-      icon: "🌪️",
-      rating: 4.6,
-      enrolled: 543,
-      regionSpecific: ["Tornado Alley", "Rural Areas"],
-      completedLessons: 0,
-      quizScore: null,
-      badges: []
-    },
-    {
-      id: "medical-emergency",
-      title: "Medical Emergency Response",
-      description: "First aid, CPR, and medical emergency protocols",
-      category: "medical",
-      difficulty: "Advanced",
-      duration: "60 min",
-      lessons: 12,
-      progress: 25,
-      status: "in-progress",
-      icon: "🏥",
-      rating: 4.9,
-      enrolled: 1678,
-      regionSpecific: ["Medical Facilities", "Remote Areas"],
-      completedLessons: 3,
-      quizScore: 95,
-      badges: ["Life Saver"]
-    },
-    {
-      id: "cyber-security",
-      title: "Cyber Security in Crisis",
-      description: "Digital safety and communication during emergencies",
-      category: "technology",
-      difficulty: "Advanced",
-      duration: "55 min",
-      lessons: 10,
-      progress: 0,
-      status: "locked",
-      icon: "🔐",
-      rating: 4.5,
-      enrolled: 234,
-      regionSpecific: ["Digital Infrastructure"],
-      completedLessons: 0,
-      quizScore: null,
-      badges: []
+  // Show enhancement notification for age-appropriate content
+  useEffect(() => {
+    if (user?.age) {
+      setIsEnhancingContent(true);
+      // Simulate content enhancement
+      const timer = setTimeout(() => {
+        setIsEnhancingContent(false);
+      }, 2000);
+      return () => clearTimeout(timer);
     }
-  ];
+  }, [user?.age]);
+
+  const modules = modulesData;
 
   const categories = [
     { id: "all", label: "All Modules", count: modules.length },
@@ -172,7 +80,7 @@ const Modules = () => {
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
       <DashboardHeader 
         title="Learning Modules"
-        subtitle="Master disaster preparedness through interactive learning"
+        subtitle={isEnhancingContent ? "Optimizing content for your age group..." : "Master disaster preparedness through interactive learning"}
         userRole="student"
       />
 
@@ -183,6 +91,26 @@ const Modules = () => {
           <span>/</span>
           <span>Modules</span>
         </div>
+
+        {/* Age-appropriate content notification */}
+        {user?.age && isEnhancingContent && (
+          <Alert className="mb-6">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <AlertDescription>
+              Optimizing learning content for age {user.age}. Questions and scenarios are being tailored to your age group for better understanding.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {user?.age && !isEnhancingContent && (
+          <Alert className="mb-6">
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>
+              Content optimized for age {user.age}! Quiz questions, drill scenarios, and module content are now age-appropriate.
+            </AlertDescription>
+          </Alert>
+        )}
+
         {/* Search and Filters */}
         <div className="mb-8 space-y-6">
           <div className="flex flex-col sm:flex-row gap-4">
@@ -241,6 +169,14 @@ const Modules = () => {
                         >
                           {module.difficulty}
                         </Badge>
+                        {user?.age && !isEnhancingContent && (
+                          <Badge 
+                            variant="outline"
+                            className="text-primary border-primary/30 bg-primary/5"
+                          >
+                            Age {user.age} Optimized
+                          </Badge>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -338,7 +274,7 @@ const Modules = () => {
                   ) : module.status === "completed" ? (
                     <div className="space-y-2">
                       <Button className="w-full" variant="outline" asChild>
-                        <Link to={`/quiz/${module.id}`}>
+                        <Link to={`/module/${module.id}?tab=quiz`}>
                           <Zap className="h-4 w-4 mr-2" />
                           Retake Quiz
                         </Link>

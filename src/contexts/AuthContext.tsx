@@ -8,6 +8,7 @@ export interface User {
   role: 'student' | 'teacher' | 'admin' | 'officer';
   institution: string;
   joinDate: string;
+  age: number;
   avatar?: string;
 }
 
@@ -31,6 +32,7 @@ const mockUsers: Record<string, User & { password: string }> = {
     role: 'student',
     institution: 'University of Safety',
     joinDate: '2024-01-15',
+    age: 16,
     password: 'password123'
   },
   'jane.smith@university.edu': {
@@ -41,6 +43,7 @@ const mockUsers: Record<string, User & { password: string }> = {
     role: 'teacher',
     institution: 'University of Safety',
     joinDate: '2023-08-20',
+    age: 32,
     password: 'password123'
   },
   'admin@university.edu': {
@@ -51,6 +54,7 @@ const mockUsers: Record<string, User & { password: string }> = {
     role: 'admin',
     institution: 'University of Safety',
     joinDate: '2022-05-10',
+    age: 45,
     password: 'password123'
   },
   'officer@university.edu': {
@@ -61,6 +65,7 @@ const mockUsers: Record<string, User & { password: string }> = {
     role: 'officer',
     institution: 'University of Safety',
     joinDate: '2023-03-01',
+    age: 38,
     password: 'password123'
   }
 };
