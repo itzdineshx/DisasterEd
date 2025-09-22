@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { TranslationProvider } from "@/contexts/TranslationContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import FloatingAIChatbot from "@/components/FloatingAIChatbot";
 
@@ -16,7 +18,6 @@ import TeacherDashboard from "./pages/TeacherDashboard";
 import ProgressAnalytics from "./pages/ProgressAnalytics";
 import Modules from "./pages/Modules";
 import ModuleDetail from "./pages/ModuleDetail";
-import DrillSimulator from "./pages/DrillSimulator";
 import Emergency from "./pages/Emergency";
 import NotFound from "./pages/NotFound";
 import RealTimeAlerts from "./pages/RealTimeAlerts";
@@ -32,11 +33,13 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+    <ThemeProvider defaultTheme="system" storageKey="disaster-ed-theme">
+      <TranslationProvider>
+        <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
           <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -76,16 +79,6 @@ const App = () => (
               <ModuleDetail />
             </ProtectedRoute>
           } />
-          <Route path="/drill-simulator" element={
-            <ProtectedRoute>
-              <DrillSimulator />
-            </ProtectedRoute>
-          } />
-          <Route path="/drill-simulator/:moduleId" element={
-            <ProtectedRoute>
-              <DrillSimulator />
-            </ProtectedRoute>
-          } />
           <Route path="/emergency" element={<Emergency />} />
           <Route path="/complexity-demo" element={<ComplexityDemo />} />
           <Route path="/real-time-alerts" element={<RealTimeAlerts />} />
@@ -113,6 +106,8 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </AuthProvider>
+      </TranslationProvider>
+    </ThemeProvider>
 </QueryClientProvider>
 );
 

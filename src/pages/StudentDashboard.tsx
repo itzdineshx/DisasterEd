@@ -10,10 +10,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/hooks/useProgress";
 import { mockModules } from "@/utils/mockData";
 import WeatherWidget from '@/components/WeatherWidget';
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const StudentDashboard = () => {
   const { user } = useAuth();
   const { moduleProgress, badges, getOverallProgress, getCompletedModules } = useProgress();
+  const { t } = useTranslation();
 
   // Get real module data with progress
   const moduleData = mockModules.slice(0, 4).map(module => {
@@ -65,8 +67,8 @@ const StudentDashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
       <DashboardHeader 
-        title={`Welcome back, ${user?.firstName || 'Student'}`}
-        subtitle="Track your learning progress and stay prepared"
+        title={t('dashboard.welcome', { name: user?.firstName || 'Student' })}
+        subtitle={t('dashboard.subtitle')}
         userRole="student"
       />
 
@@ -80,7 +82,7 @@ const StudentDashboard = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">{moduleData.length}</p>
-                <p className="text-sm text-muted-foreground">Modules Enrolled</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.stats.modulesEnrolled')}</p>
               </div>
             </CardContent>
           </Card>
@@ -92,7 +94,7 @@ const StudentDashboard = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">{getCompletedModules()}</p>
-                <p className="text-sm text-muted-foreground">Completed</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.stats.completed')}</p>
               </div>
             </CardContent>
           </Card>
@@ -104,7 +106,7 @@ const StudentDashboard = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">{badges.length}</p>
-                <p className="text-sm text-muted-foreground">Badges Earned</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.stats.badgesEarned')}</p>
               </div>
             </CardContent>
           </Card>
@@ -116,27 +118,27 @@ const StudentDashboard = () => {
               </div>
               <div>
                 <p className="text-2xl font-bold">{getOverallProgress()}%</p>
-                <p className="text-sm text-muted-foreground">Preparedness Score</p>
+                <p className="text-sm text-muted-foreground">{t('dashboard.stats.preparednessScore')}</p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Learning Modules */}
-          <div className="dashboard-main space-y-4 sm:space-y-6">
+          <div className="dashboard-main space-y-4 sm:space-y-6 lg:col-span-2 order-2 lg:order-1">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="mobile-header font-bold">Learning Modules</h2>
+              <h2 className="mobile-header font-bold">{t('dashboard.learningModules')}</h2>
               <div className="mobile-flex mobile-space w-full sm:w-auto">
                 <Button variant="outline" size="sm" className="mobile-button" asChild>
                   <Link to="/progress-analytics">
-                    <span className="mobile-hide">View Analytics</span>
+                    <span className="mobile-hide">{t('dashboard.viewAnalytics')}</span>
                     <span className="mobile-show">Analytics</span>
                   </Link>
                 </Button>
                 <Button variant="outline" size="sm" className="mobile-button" asChild>
                   <Link to="/modules">
-                    <span className="mobile-hide">View All</span>
+                    <span className="mobile-hide">{t('dashboard.viewAll')}</span>
                     <span className="mobile-show">All</span>
                   </Link>
                 </Button>
@@ -194,19 +196,21 @@ const StudentDashboard = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="dashboard-sidebar space-y-4 sm:space-y-6">
+          <div className="dashboard-sidebar space-y-4 sm:space-y-6 lg:col-span-1 order-1 lg:order-2">
             {/* Weather Widget */}
-            <WeatherWidget showAlerts={true} />
+            <div className="mobile-card">
+              <WeatherWidget showAlerts={true} />
+            </div>
             
             {/* Emergency Button */}
             <Card className="bg-gradient-emergency text-white">
-              <CardContent className="p-6 text-center">
+              <CardContent className="mobile-card text-center">
                 <AlertTriangle className="h-8 w-8 mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Emergency</h3>
-                <p className="text-sm mb-4 text-white/90">
+                <h3 className="font-semibold mb-2 mobile-header">Emergency</h3>
+                <p className="text-sm mb-4 text-white/90 mobile-text">
                   Quick access to emergency contacts and procedures
                 </p>
-                <Button variant="secondary" className="w-full" asChild>
+                <Button variant="secondary" className="w-full mobile-button" asChild>
                   <Link to="/emergency">Access Emergency</Link>
                 </Button>
               </CardContent>
@@ -214,13 +218,13 @@ const StudentDashboard = () => {
 
             {/* Achievements */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
+              <CardHeader className="mobile-card">
+                <CardTitle className="flex items-center mobile-header">
                   <Award className="h-5 w-5 mr-2" />
-                  Achievements
+                  {t('dashboard.achievements')}
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="mobile-card">
                 <div className="grid grid-cols-5 gap-2">
                   {badges.slice(0, 5).map((badge, index) => (
                     <div
@@ -241,38 +245,38 @@ const StudentDashboard = () => {
                     </div>
                   ))}
                 </div>
-                <Button variant="outline" size="sm" className="w-full mt-4">
-                  View All Badges
+                <Button variant="outline" size="sm" className="w-full mt-4 mobile-button">
+                  {t('dashboard.viewAllBadges')}
                 </Button>
               </CardContent>
             </Card>
 
             {/* Upcoming Drills */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
+              <CardHeader className="mobile-card">
+                <CardTitle className="flex items-center mobile-header">
                   <Clock className="h-5 w-5 mr-2" />
-                  Upcoming Drills
+                  {t('dashboard.upcomingDrills')}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="mobile-card space-y-4">
                 {upcomingDrills.map((drill, index) => (
                   <div key={index} className="border-l-4 border-primary pl-4">
                     <div className="flex items-center justify-between">
-                      <h4 className="font-medium">{drill.type}</h4>
+                      <h4 className="font-medium mobile-text">{drill.type}</h4>
                       {drill.mandatory && (
                         <Badge variant="secondary" className="text-emergency">Mandatory</Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground">{drill.date}</p>
-                    <p className="text-sm text-muted-foreground flex items-center">
+                    <p className="text-sm text-muted-foreground mobile-text">{drill.date}</p>
+                    <p className="text-sm text-muted-foreground flex items-center mobile-text">
                       <MapPin className="h-3 w-3 mr-1" />
                       {drill.location}
                     </p>
                   </div>
                 ))}
-                <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link to="/drill-simulator">Start Virtual Drill</Link>
+                <Button variant="outline" size="sm" className="w-full mobile-button" asChild>
+                  <Link to="/modules">{t('dashboard.practiceDrills')}</Link>
                 </Button>
               </CardContent>
             </Card>

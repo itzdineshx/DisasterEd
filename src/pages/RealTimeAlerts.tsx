@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Switch } from "@/components/ui/switch";
 import { Link } from "react-router-dom";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface AlertData {
   id: string;
@@ -21,6 +23,7 @@ interface AlertData {
 }
 
 const RealTimeAlerts = () => {
+  const { user } = useAuth();
   const [alerts, setAlerts] = useState<AlertData[]>([]);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [filterSeverity, setFilterSeverity] = useState<string[]>(['high', 'critical']);
@@ -133,34 +136,19 @@ const RealTimeAlerts = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
-      <header className="bg-gradient-primary text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <Bell className="h-8 w-8" />
-              <span className="font-bold text-xl">Real-Time Alerts</span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${isConnected ? 'bg-safe/20' : 'bg-emergency/20'}`}>
-                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-safe animate-pulse' : 'bg-emergency'}`}></div>
-                <span className="text-sm">{isConnected ? 'Connected' : 'Offline'}</span>
-              </div>
-              <Button variant="secondary" asChild>
-                <Link to="/emergency">Back to Emergency</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader 
+        title="Real-Time Alerts"
+        subtitle="Live emergency notifications and crisis updates"
+        userRole={user?.role as "student" | "teacher" | "admin" | "officer" || 'student'}
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-          <Link to="/" className="hover:text-primary">Home</Link>
-          <span>/</span>
-          <Link to="/emergency" className="hover:text-primary">Emergency</Link>
-          <span>/</span>
-          <span>Real-Time Alerts</span>
+        {/* Connection Status */}
+        <div className="flex justify-between items-center mb-6">
+          <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${isConnected ? 'bg-safe/20' : 'bg-emergency/20'}`}>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-safe animate-pulse' : 'bg-emergency'}`}></div>
+            <span className="text-sm">{isConnected ? 'Connected' : 'Offline'}</span>
+          </div>
         </div>
         {/* Settings Panel */}
         <Card className="mb-8">

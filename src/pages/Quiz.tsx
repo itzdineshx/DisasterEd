@@ -385,7 +385,7 @@ const Quiz = () => {
                       <Card key={question.id} className={`border-l-4 ${
                         isCorrect ? "border-l-safe" : "border-l-emergency"
                       }`}>
-                        <CardContent className="p-4">
+                        <CardContent className="p-6">
                           <div className="flex items-start space-x-3">
                             {isCorrect ? (
                               <CheckCircle className="h-5 w-5 text-safe mt-0.5" />
@@ -448,11 +448,6 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
-      <DashboardHeader 
-        title="Quiz"
-        subtitle={isLoading ? "Generating age-appropriate questions..." : "Test your knowledge"}
-        userRole="student"
-      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
@@ -491,7 +486,7 @@ const Quiz = () => {
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div>
-                    <CardTitle className="text-2xl">{quizData.title}</CardTitle>
+                    <CardTitle className="text-xl">{quizData.title}</CardTitle>
                 <p className="text-muted-foreground mt-1">{quizData.description}</p>
               </div>
               <div className="text-right">

@@ -21,7 +21,92 @@ const TeacherDashboard = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [selectedClass, setSelectedClass] = useState("all");
-  const { students, classes, modules } = useData();
+  const { modules } = useData();
+  
+  // Mock data for students and classes
+  const students = {
+    getAll: () => [
+      { 
+        id: '1', 
+        name: 'John Doe', 
+        email: 'john.doe@school.edu',
+        class: '10A', 
+        overallScore: 85, 
+        averageScore: 85,
+        lastActivity: '2 hours ago', 
+        lastActive: '2025-09-21',
+        status: 'active',
+        modulesCompleted: 8,
+        totalModules: 10
+      },
+      { 
+        id: '2', 
+        name: 'Jane Smith', 
+        email: 'jane.smith@school.edu',
+        class: '10A', 
+        overallScore: 92, 
+        averageScore: 92,
+        lastActivity: '1 hour ago', 
+        lastActive: '2025-09-21',
+        status: 'active',
+        modulesCompleted: 9,
+        totalModules: 10
+      },
+      { 
+        id: '3', 
+        name: 'Mike Johnson', 
+        email: 'mike.johnson@school.edu',
+        class: '10B', 
+        overallScore: 78, 
+        averageScore: 78,
+        lastActivity: '3 hours ago', 
+        lastActive: '2025-09-20',
+        status: 'active',
+        modulesCompleted: 6,
+        totalModules: 10
+      },
+      { 
+        id: '4', 
+        name: 'Sarah Wilson', 
+        email: 'sarah.wilson@school.edu',
+        class: '10B', 
+        overallScore: 88, 
+        averageScore: 88,
+        lastActivity: '30 minutes ago', 
+        lastActive: '2025-09-21',
+        status: 'active',
+        modulesCompleted: 7,
+        totalModules: 10
+      }
+    ],
+    create: (student: any) => ({ ...student, id: Date.now().toString() }),
+    update: (id: string, updates: any) => {},
+    remove: (id: string) => {}
+  };
+  
+  const classes = {
+    getAll: () => [
+      { 
+        id: '1', 
+        name: '10A', 
+        semester: 'Fall 2025', 
+        students: 25, 
+        avgScore: 85,
+        averageProgress: 85 
+      },
+      { 
+        id: '2', 
+        name: '10B', 
+        semester: 'Fall 2025', 
+        students: 23, 
+        avgScore: 82,
+        averageProgress: 78 
+      }
+    ],
+    create: (cls: any) => ({ ...cls, id: Date.now().toString() }),
+    update: (id: string, updates: any) => {},
+    remove: (id: string) => {}
+  };
   
   // Form states for new class/student
   const [newClass, setNewClass] = useState<Partial<Class>>({
@@ -479,7 +564,7 @@ const TeacherDashboard = () => {
                       <div className="flex items-center space-x-4">
                         <div className="text-3xl">{module.icon}</div>
                         <div>
-                          <h3 className="font-semibold text-lg">{module.title}</h3>
+                          <h3 className="font-semibold text-xl">{module.title}</h3>
                           <p className="text-muted-foreground">{module.description}</p>
                           <div className="flex items-center space-x-4 mt-2 text-sm text-muted-foreground">
                             <span>{module.lessons} lessons</span>

@@ -1,0 +1,167 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "close": "Close",
+    "open": "Open",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "submit": "Submit",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "navigation": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "modules": "Learning Modules",
+    "emergency": "Emergency Hub",
+    "alerts": "Live Alerts",
+    "maps": "Emergency Maps",
+    "tips": "Safety Tips",
+    "communication": "Communication",
+    "analytics": "Analytics",
+    "certificates": "Certificates",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Sign In",
+    "register": "Register"
+  },
+  "dashboard": {
+    "welcome": "Welcome back, {{name}}",
+    "subtitle": "Track your learning progress and stay prepared",
+    "stats": {
+      "modulesEnrolled": "Modules Enrolled",
+      "completed": "Completed",
+      "badgesEarned": "Badges Earned",
+      "preparednessScore": "Preparedness Score"
+    },
+    "learningModules": "Learning Modules",
+    "viewAnalytics": "View Analytics",
+    "viewAll": "View All",
+    "upcomingDrills": "Upcoming Drills",
+    "achievements": "Achievements",
+    "viewAllBadges": "View All Badges",
+    "practiceDrills": "Practice Module Drills"
+  },
+  "modules": {
+    "title": "Learning Modules",
+    "subtitle": "Master disaster preparedness through interactive learning",
+    "search": "Search modules...",
+    "allModules": "All Modules",
+    "earthquake": "Earthquake",
+    "fireSafety": "Fire Safety",
+    "flood": "Flood",
+    "weather": "Weather",
+    "medical": "Medical",
+    "technology": "Technology",
+    "count": "{{count}} modules",
+    "duration": "{{duration}}",
+    "lessons": "{{count}} lessons",
+    "rating": "{{rating}}",
+    "enrolled": "{{count}} enrolled",
+    "progress": "Progress",
+    "completedLessons": "{{completed}} of {{total}} lessons completed",
+    "latestScore": "Latest Quiz Score",
+    "regionSpecific": "Region-Specific Content",
+    "badgesEarned": "Badges Earned",
+    "startLearning": "Start Learning",
+    "continue": "Continue",
+    "completePrerequisites": "Complete Prerequisites",
+    "reviewContent": "Review Content",
+    "retakeQuiz": "Retake Quiz",
+    "noModulesFound": "No modules found",
+    "adjustSearch": "Try adjusting your search or filter criteria."
+  },
+  "emergency": {
+    "title": "Emergency Hub",
+    "subtitle": "Quick access to emergency contacts and procedures",
+    "emergencyAlert": "Emergency Alert",
+    "accessEmergency": "Access Emergency",
+    "police": "Police",
+    "fire": "Fire",
+    "ambulance": "Ambulance",
+    "disasterMgmt": "Disaster Management",
+    "womenHelpline": "Women Helpline",
+    "childHelpline": "Child Helpline",
+    "emergencyMap": "Emergency Map Available"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "role": "Role",
+    "student": "Student",
+    "teacher": "Teacher",
+    "admin": "Administrator",
+    "officer": "Disaster Officer",
+    "forgotPassword": "Forgot Password?",
+    "rememberMe": "Remember me",
+    "signingIn": "Signing in...",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "invalidCredentials": "Invalid email or password",
+    "accountCreated": "Account created successfully",
+    "passwordReset": "Password reset email sent"
+  },
+  "landing": {
+    "hero": {
+      "title": "DisasterEd: Your Disaster Preparedness Companion",
+      "subtitle": "Master emergency response with AI-powered learning, real-time alerts, and interactive training modules",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More"
+    },
+    "features": {
+      "aiLearning": {
+        "title": "AI-Powered Learning",
+        "description": "24/7 AI assistant providing instant disaster management guidance and educational content"
+      },
+      "weatherAlerts": {
+        "title": "Real-Time Weather Alerts",
+        "description": "Live weather monitoring with disaster risk assessment and emergency notifications"
+      },
+      "emergencyHub": {
+        "title": "Emergency Response Hub",
+        "description": "Quick access to Indian emergency services, procedures, and safety resources"
+      },
+      "interactiveMaps": {
+        "title": "Interactive Emergency Maps",
+        "description": "OpenStreetMap integration showing hospitals, fire stations, and evacuation routes"
+      }
+    },
+    "stats": {
+      "students": "{{count}}+ Students Trained",
+      "modules": "{{count}}+ Learning Modules",
+      "emergencies": "{{count}}+ Emergency Responses",
+      "countries": "{{count}}+ Countries Served"
+    }
+  },
+  "languages": {
+    "english": "English",
+    "hindi": "Hindi",
+    "tamil": "Tamil",
+    "telugu": "Telugu",
+    "bengali": "Bengali"
+  }
+}

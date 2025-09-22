@@ -155,7 +155,7 @@ const Modules = () => {
                   <div className="flex items-center space-x-3">
                     <div className="text-3xl">{module.icon}</div>
                     <div className="flex-1">
-                      <CardTitle className="text-lg leading-tight">{module.title}</CardTitle>
+                      <CardTitle className="text-xl leading-tight">{module.title}</CardTitle>
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge 
                           variant="outline" 

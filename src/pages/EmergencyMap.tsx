@@ -147,7 +147,7 @@ const EmergencyMap = () => {
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-sm">Quick Actions</CardTitle>
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Button 
@@ -172,7 +172,7 @@ const EmergencyMap = () => {
                   variant="outline" 
                   size="sm" 
                   className="w-full justify-start"
-                  onClick={() => navigate('/drill-simulator')}
+                  onClick={() => navigate('/modules')}
                 >
                   <MapPin className="h-4 w-4 mr-2" />
                   Practice Evacuation

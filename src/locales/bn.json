@@ -1,0 +1,167 @@
+{
+  "common": {
+    "loading": "লোড হচ্ছে...",
+    "error": "ত্রুটি",
+    "success": "সাফল্য",
+    "cancel": "বাতিল করুন",
+    "save": "সংরক্ষণ করুন",
+    "delete": "মুছুন",
+    "edit": "সম্পাদনা করুন",
+    "view": "দেখুন",
+    "back": "পিছনে",
+    "next": "পরবর্তী",
+    "previous": "পূর্ববর্তী",
+    "close": "বন্ধ করুন",
+    "open": "খুলুন",
+    "search": "অনুসন্ধান করুন",
+    "filter": "ফিল্টার করুন",
+    "sort": "সাজান",
+    "export": "রপ্তানি করুন",
+    "import": "আমদানি করুন",
+    "download": "ডাউনলোড করুন",
+    "upload": "আপলোড করুন",
+    "submit": "জমা দিন",
+    "reset": "রিসেট করুন",
+    "confirm": "নিশ্চিত করুন",
+    "yes": "হ্যাঁ",
+    "no": "না"
+  },
+  "navigation": {
+    "home": "হোম",
+    "dashboard": "ড্যাশবোর্ড",
+    "modules": "লার্নিং মডিউল",
+    "emergency": "জরুরী হাব",
+    "alerts": "লাইভ অ্যালার্ট",
+    "maps": "জরুরী ম্যাপ",
+    "tips": "নিরাপত্তা টিপস",
+    "communication": "যোগাযোগ",
+    "analytics": "বিশ্লেষণ",
+    "certificates": "সার্টিফিকেট",
+    "profile": "প্রোফাইল",
+    "settings": "সেটিংস",
+    "logout": "লগ আউট",
+    "login": "সাইন ইন",
+    "register": "রেজিস্টার"
+  },
+  "dashboard": {
+    "welcome": "{{name}} আবার স্বাগতম",
+    "subtitle": "আপনার লার্নিং প্রগ্রেস ট্র্যাক করুন এবং প্রস্তুত থাকুন",
+    "stats": {
+      "modulesEnrolled": "মডিউল নথিভুক্ত",
+      "completed": "সম্পন্ন",
+      "badgesEarned": "ব্যাজ অর্জিত",
+      "preparednessScore": "প্রস্তুতি স্কোর"
+    },
+    "learningModules": "লার্নিং মডিউল",
+    "viewAnalytics": "বিশ্লেষণ দেখুন",
+    "viewAll": "সব দেখুন",
+    "upcomingDrills": "আসন্ন ড্রিল",
+    "achievements": "অর্জন",
+    "viewAllBadges": "সব ব্যাজ দেখুন",
+    "practiceDrills": "মডিউল ড্রিল অনুশীলন করুন"
+  },
+  "modules": {
+    "title": "লার্নিং মডিউল",
+    "subtitle": "ইন্টারেক্টিভ লার্নিংয়ের মাধ্যমে দুর্যোগ প্রস্তুতিতে দক্ষতা অর্জন করুন",
+    "search": "মডিউল অনুসন্ধান করুন...",
+    "allModules": "সব মডিউল",
+    "earthquake": "ভূমিকম্প",
+    "fireSafety": "অগ্নি নিরাপত্তা",
+    "flood": "বন্যা",
+    "weather": "আবহাওয়া",
+    "medical": "চিকিৎসা",
+    "technology": "প্রযুক্তি",
+    "count": "{{count}} মডিউল",
+    "duration": "{{duration}}",
+    "lessons": "{{count}} পাঠ",
+    "rating": "{{rating}}",
+    "enrolled": "{{count}} নথিভুক্ত",
+    "progress": "অগ্রগতি",
+    "completedLessons": "{{total}} এর {{completed}} পাঠ সম্পন্ন",
+    "latestScore": "সর্বশেষ কুইজ স্কোর",
+    "regionSpecific": "অঞ্চল-নির্দিষ্ট কনটেন্ট",
+    "badgesEarned": "ব্যাজ অর্জিত",
+    "startLearning": "লার্নিং শুরু করুন",
+    "continue": "চালিয়ে যান",
+    "completePrerequisites": "পূর্বশর্ত সম্পন্ন করুন",
+    "reviewContent": "কনটেন্ট পর্যালোচনা করুন",
+    "retakeQuiz": "কুইজ আবার নিন",
+    "noModulesFound": "কোন মডিউল পাওয়া যায়নি",
+    "adjustSearch": "আপনার অনুসন্ধান বা ফিল্টার মানদণ্ড সামঞ্জস্য করার চেষ্টা করুন।"
+  },
+  "emergency": {
+    "title": "জরুরী হাব",
+    "subtitle": "জরুরী যোগাযোগ এবং প্রক্রিয়াগুলিতে দ্রুত অ্যাক্সেস",
+    "emergencyAlert": "জরুরী অ্যালার্ট",
+    "accessEmergency": "জরুরী অ্যাক্সেস",
+    "police": "পুলিশ",
+    "fire": "অগ্নি",
+    "ambulance": "অ্যাম্বুলেন্স",
+    "disasterMgmt": "দুর্যোগ ব্যবস্থাপনা",
+    "womenHelpline": "নারী হেল্পলাইন",
+    "childHelpline": "শিশু হেল্পলাইন",
+    "emergencyMap": "জরুরী ম্যাপ উপলব্ধ"
+  },
+  "auth": {
+    "signIn": "সাইন ইন",
+    "signUp": "সাইন আপ",
+    "email": "ইমেইল",
+    "password": "পাসওয়ার্ড",
+    "confirmPassword": "পাসওয়ার্ড নিশ্চিত করুন",
+    "firstName": "প্রথম নাম",
+    "lastName": "শেষ নাম",
+    "role": "ভূমিকা",
+    "student": "ছাত্র",
+    "teacher": "শিক্ষক",
+    "admin": "অ্যাডমিন",
+    "officer": "দুর্যোগ অফিসার",
+    "forgotPassword": "পাসওয়ার্ড ভুলে গেছেন?",
+    "rememberMe": "আমাকে মনে রাখুন",
+    "signingIn": "সাইন ইন হচ্ছে...",
+    "createAccount": "অ্যাকাউন্ট তৈরি করুন",
+    "alreadyHaveAccount": "ইতিমধ্যে অ্যাকাউন্ট আছে?",
+    "dontHaveAccount": "অ্যাকাউন্ট নেই?",
+    "invalidCredentials": "অবৈধ ইমেইল বা পাসওয়ার্ড",
+    "accountCreated": "অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে",
+    "passwordReset": "পাসওয়ার্ড রিসেট ইমেইল পাঠানো হয়েছে"
+  },
+  "landing": {
+    "hero": {
+      "title": "DisasterEd: আপনার দুর্যোগ প্রস্তুতি সহযোগী",
+      "subtitle": "AI-চালিত লার্নিং, রিয়েল-টাইম অ্যালার্ট এবং ইন্টারেক্টিভ ট্রেনিং মডিউল সহ জরুরী প্রতিক্রিয়ায় দক্ষতা অর্জন করুন",
+      "getStarted": "শুরু করুন",
+      "learnMore": "আরও জানুন"
+    },
+    "features": {
+      "aiLearning": {
+        "title": "AI-চালিত লার্নিং",
+        "description": "24/7 AI সহায়ক তাৎক্ষণিক দুর্যোগ ব্যবস্থাপনা নির্দেশিকা এবং শিক্ষামূলক কনটেন্ট প্রদান করে"
+      },
+      "weatherAlerts": {
+        "title": "রিয়েল-টাইম আবহাওয়া অ্যালার্ট",
+        "description": "দুর্যোগ ঝুঁকি মূল্যায়ন এবং জরুরী বিজ্ঞপ্তি সহ লাইভ আবহাওয়া পর্যবেক্ষণ"
+      },
+      "emergencyHub": {
+        "title": "জরুরী প্রতিক্রিয়া হাব",
+        "description": "ভারতীয় জরুরী সেবা, প্রক্রিয়া এবং নিরাপত্তা সম্পদে দ্রুত অ্যাক্সেস"
+      },
+      "interactiveMaps": {
+        "title": "ইন্টারেক্টিভ জরুরী ম্যাপ",
+        "description": "হাসপাতাল, ফায়ার স্টেশন এবং সরানোর রুট দেখানো OpenStreetMap ইন্টিগ্রেশন"
+      }
+    },
+    "stats": {
+      "students": "{{count}}+ প্রশিক্ষিত ছাত্র",
+      "modules": "{{count}}+ লার্নিং মডিউল",
+      "emergencies": "{{count}}+ জরুরী প্রতিক্রিয়া",
+      "countries": "{{count}}+ দেশে সেবা"
+    }
+  },
+  "languages": {
+    "english": "ইংরেজি",
+    "hindi": "হিন্দি",
+    "tamil": "তামিল",
+    "telugu": "তেলুগু",
+    "bengali": "বাংলা"
+  }
+}

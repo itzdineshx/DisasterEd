@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { DashboardHeader } from "@/components/DashboardHeader";
 
 interface Message {
   id: string;
@@ -234,27 +235,20 @@ const LiveCommunication = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
-      <header className="bg-gradient-primary text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <MessageSquare className="h-8 w-8" />
-              <span className="font-bold text-xl">Live Communication</span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${isConnected ? 'bg-safe/20' : 'bg-emergency/20'}`}>
-                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-safe animate-pulse' : 'bg-emergency'}`}></div>
-                <span className="text-sm">{isConnected ? 'Connected' : 'Offline'}</span>
-              </div>
-              <Button variant="secondary" asChild>
-                <Link to="/emergency">Back to Emergency</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader 
+        title="Live Communication"
+        subtitle="Real-time messaging and emergency coordination system"
+        userRole={user?.role as "student" | "teacher" | "admin" | "officer" || 'student'}
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Connection Status */}
+        <div className="flex justify-between items-center mb-6">
+          <div className={`flex items-center space-x-2 px-3 py-1 rounded-full ${isConnected ? 'bg-safe/20' : 'bg-emergency/20'}`}>
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-safe animate-pulse' : 'bg-emergency'}`}></div>
+            <span className="text-sm">{isConnected ? 'Connected' : 'Offline'}</span>
+          </div>
+        </div>
         {/* Navigation Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
           <Link to="/" className="hover:text-primary">Home</Link>

@@ -4,8 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Link } from "react-router-dom";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { useAuth } from "@/contexts/AuthContext";
+import EssentialTips from '@/components/EssentialTips';
 
 const Emergency = () => {
+  const { user } = useAuth();
+  
   const emergencyContacts = [
     {
       name: "Fire Department",
@@ -92,37 +97,16 @@ const Emergency = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
-      {/* Header */}
-      <header className="bg-gradient-emergency text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <Shield className="h-8 w-8" />
-              <span className="font-bold text-xl">DisasterEd Emergency</span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <div className="hidden sm:flex items-center space-x-2 text-sm">
-                <Clock className="h-4 w-4" />
-                <span>24/7 Support Available</span>
-              </div>
-              <Button variant="secondary" asChild>
-                <Link to="/student-dashboard">Back to Dashboard</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader 
+        title="Emergency Hub"
+        subtitle="Immediate access to emergency services and crisis response tools"
+        userRole={user?.role as "student" | "teacher" | "admin" | "officer" || 'student'}
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
-          <Link to="/" className="hover:text-primary">Home</Link>
-          <span>/</span>
-          <span>Emergency</span>
-        </div>
-        {/* Emergency Banner */}
-        <div className="bg-gradient-emergency text-white p-8 rounded-2xl mb-8 text-center">
-          <AlertTriangle className="h-16 w-16 mx-auto mb-4" />
+        {/* Emergency Banner (themed) */}
+        <div className="theme-gradient-emergency text-emergency-foreground p-8 rounded-2xl mb-8 text-center text-white">
+          <AlertTriangle className="h-16 w-16 mx-auto mb-4 text-emergency-foreground" />
           <h1 className="text-4xl font-bold mb-4">Emergency Resources</h1>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
             Quick access to emergency contacts, safety procedures, and real-time alerts. 
@@ -139,7 +123,7 @@ const Emergency = () => {
             </h2>
             <div className="space-y-4">
               {currentAlerts.map((alert, index) => (
-                <Alert key={index} className={`border-l-4 border-${alert.level === 'warning' ? 'warning' : 'primary'}`}>
+                <Alert key={index} className={alert.level === 'warning' ? 'status-warning' : 'status-info'}>
                   <AlertTriangle className="h-4 w-4" />
                   <AlertDescription>
                     <div className="flex justify-between items-start">
@@ -163,46 +147,56 @@ const Emergency = () => {
             <h2 className="text-2xl font-bold">Emergency Contacts</h2>
             
             <div className="grid gap-4">
-              {emergencyContacts.map((contact, index) => (
-                <Card key={index} className="hover:shadow-card transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <div className={`p-2 bg-${contact.color}/10 rounded-lg`}>
-                            <Phone className={`h-5 w-5 text-${contact.color}`} />
+              {emergencyContacts.map((contact, index) => {
+                const colorMap: Record<string, { iconBg: string; iconText: string; btnClass: string; numText?: string }> = {
+                  emergency: { iconBg: 'bg-emergency/10', iconText: 'text-emergency', btnClass: 'btn-emergency-enhanced', numText: 'text-emergency' },
+                  primary: { iconBg: 'bg-primary/10', iconText: 'text-primary', btnClass: 'btn-primary-enhanced', numText: 'text-primary' },
+                  safe: { iconBg: 'bg-safe/10', iconText: 'text-safe', btnClass: 'btn-safe-enhanced', numText: 'text-safe' },
+                  warning: { iconBg: 'bg-warning/10', iconText: 'text-warning', btnClass: 'btn-primary-enhanced', numText: 'text-warning' },
+                };
+                const classes = colorMap[contact.color] || colorMap.primary;
+
+                return (
+                  <Card key={index} className="card-enhanced">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-3 mb-2">
+                            <div className={`p-2 ${classes.iconBg} rounded-lg`}>
+                              <Phone className={`h-5 w-5 ${classes.iconText}`} />
+                            </div>
+                            <div>
+                              <h3 className="font-semibold text-lg">{contact.name}</h3>
+                              <Badge variant="outline" className="text-xs">
+                                {contact.available}
+                              </Badge>
+                            </div>
                           </div>
-                          <div>
-                            <h3 className="font-semibold text-lg">{contact.name}</h3>
-                            <Badge variant="outline" className="text-xs">
-                              {contact.available}
-                            </Badge>
+                          <p className="text-muted-foreground text-sm mb-3">
+                            {contact.description}
+                          </p>
+                        </div>
+                        
+                        <div className="text-right ml-4">
+                          <div className={`text-2xl font-bold ${classes.numText ?? 'text-primary'} mb-2`}>
+                            {contact.number}
                           </div>
+                          <Button 
+                            size="sm" 
+                            className={classes.btnClass}
+                            asChild
+                          >
+                            <a href={`tel:${contact.number}`}>
+                              <Phone className="h-4 w-4 mr-1" />
+                              Call Now
+                            </a>
+                          </Button>
                         </div>
-                        <p className="text-muted-foreground text-sm mb-3">
-                          {contact.description}
-                        </p>
                       </div>
-                      
-                      <div className="text-right ml-4">
-                        <div className="text-2xl font-bold text-primary mb-2">
-                          {contact.number}
-                        </div>
-                        <Button 
-                          size="sm" 
-                          className={`bg-${contact.color} hover:bg-${contact.color}/90`}
-                          asChild
-                        >
-                          <a href={`tel:${contact.number}`}>
-                            <Phone className="h-4 w-4 mr-1" />
-                            Call Now
-                          </a>
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </div>
 
@@ -215,7 +209,7 @@ const Emergency = () => {
                 const IconComponent = action.icon;
                 return (
                   <Card key={index} className="hover:shadow-card transition-all hover:-translate-y-1 cursor-pointer">
-                    <CardContent className="p-4">
+                    <CardContent className="p-6">
                       <Link to={action.link} className="flex items-center space-x-3">
                         <div className={`p-3 bg-${action.color}/10 rounded-lg`}>
                           <IconComponent className={`h-6 w-6 text-${action.color}`} />
@@ -279,6 +273,12 @@ const Emergency = () => {
             </Card>
           </div>
         </div>
+
+        {/* Essential Preparedness Tips */}
+        <div className="mt-8">
+          <EssentialTips />
+        </div>
+
       </main>
     </div>
   );

@@ -157,6 +157,26 @@ Please provide helpful, accurate, and actionable advice focused on disaster mana
   }
 };
 
+// Helper function to extract JSON from markdown code blocks
+const extractJSONFromMarkdown = (text: string): string => {
+  // Remove markdown code block markers
+  let cleanedText = text.trim();
+  
+  // Remove ```json at the beginning
+  if (cleanedText.startsWith('```json')) {
+    cleanedText = cleanedText.replace(/^```json\s*/, '');
+  } else if (cleanedText.startsWith('```')) {
+    cleanedText = cleanedText.replace(/^```\s*/, '');
+  }
+  
+  // Remove ``` at the end
+  if (cleanedText.endsWith('```')) {
+    cleanedText = cleanedText.replace(/\s*```$/, '');
+  }
+  
+  return cleanedText.trim();
+};
+
 // Generate age-appropriate quiz questions
 export const generateAgeAppropriateQuiz = async (
   topic: string, 
@@ -184,38 +204,53 @@ For ${ageGroup}, include these advanced question types:
 
 Make questions challenging and thought-provoking while maintaining educational value.` : '';
   
-    const prompt = `Generate ${finalQuestionCount} diverse multiple choice questions SPECIFICALLY about "${topic}" for disaster preparedness education.
+    const prompt = `Generate ${finalQuestionCount} multiple choice questions SPECIFICALLY about "${topic}" for disaster preparedness education.
 
-IMPORTANT: Focus ONLY on "${topic}" - do not include questions about other disaster types or emergency topics. 
+IMPORTANT: Focus ONLY on "${topic}" - do not include questions about other disaster types.
 
 Target audience: ${ageGroup} (age ${userAge})
 Language style: ${agePrompt}${complexityPrompt}
 
-Topic Focus: Ensure all questions are directly related to "${topic}" and its specific procedures, protocols, and safety measures. Do not mix with other disaster types.
+Topic Focus: Ensure all questions are directly related to "${topic}" and its specific procedures and safety measures.
 
-Format each question as a JSON object with this exact structure:
+Format each question as a JSON object with this structure:
 {
   "id": "unique_id",
-  "question": "Question text specifically about ${topic}",
+  "question": "Question text about ${topic}",
   "options": ["Option A", "Option B", "Option C", "Option D"],
   "correct": 0,
-  "explanation": "Detailed explanation of why this answer is correct for ${topic}",
+  "explanation": "Brief explanation why this answer is correct",
   "points": 10,
   "ageAppropriate": true,
   "type": "single",
   "difficulty": "intermediate",
-  "scenario": "Optional scenario context related to ${topic}",
   "tags": ["${topic.toLowerCase().replace(/[^a-z0-9]/g, '-')}", "disaster-preparedness"]
 }
 
-Return only a JSON array of questions, no additional text. Ensure questions test deep understanding and practical application of ${topic} safety concepts specifically.`;
+Return ONLY a JSON array of ${finalQuestionCount} questions, no additional text or markdown.`;
 
   try {
     console.log('Generating questions for topic:', topic, 'Age group:', ageGroup);
     const response = await callGeminiAPI(prompt);
     console.log('Raw AI response:', response);
     
-    const questions = JSON.parse(response);
+    // Extract JSON from markdown code blocks
+    const cleanedResponse = extractJSONFromMarkdown(response);
+    console.log('Cleaned response:', cleanedResponse);
+    
+    // Validate that we have a complete JSON response
+    if (!cleanedResponse || cleanedResponse.trim().length === 0) {
+      console.error('Empty response from AI for topic:', topic);
+      return [];
+    }
+    
+    // Check if the response appears to be truncated
+    if (!cleanedResponse.trim().endsWith(']') && !cleanedResponse.trim().endsWith('}')) {
+      console.error('Response appears truncated for topic:', topic, 'Last 100 chars:', cleanedResponse.slice(-100));
+      return [];
+    }
+    
+    const questions = JSON.parse(cleanedResponse);
     console.log('Parsed questions:', questions);
     
     if (Array.isArray(questions) && questions.length > 0) {
@@ -223,12 +258,72 @@ Return only a JSON array of questions, no additional text. Ensure questions test
       return questions;
     } else {
       console.warn('AI returned empty or invalid questions array for topic:', topic);
-      return [];
+      return getBasicFallbackQuestions(topic, finalQuestionCount);
     }
   } catch (error) {
     console.error('Error generating quiz questions for topic:', topic, 'Error:', error);
-    return [];
+    console.log('Falling back to basic questions for topic:', topic);
+    return getBasicFallbackQuestions(topic, finalQuestionCount);
   }
+};
+
+// Basic fallback questions generator
+const getBasicFallbackQuestions = (topic: string, count: number): GeneratedQuestion[] => {
+  const fallbackQuestions: GeneratedQuestion[] = [
+    {
+      id: "fallback_1",
+      question: `What is the most important first step when preparing for ${topic.toLowerCase()}?`,
+      options: [
+        "Create an emergency plan",
+        "Buy emergency supplies", 
+        "Wait for official instructions",
+        "Do nothing until it happens"
+      ],
+      correct: 0,
+      explanation: "Creating an emergency plan is the foundation of disaster preparedness.",
+      points: 10,
+      ageAppropriate: true,
+      type: "single",
+      difficulty: "basic",
+      tags: [topic.toLowerCase().replace(/[^a-z0-9]/g, '-'), "disaster-preparedness"]
+    },
+    {
+      id: "fallback_2", 
+      question: `During ${topic.toLowerCase()}, what should you do first to stay safe?`,
+      options: [
+        "Run outside immediately",
+        "Call 911",
+        "Follow Drop, Cover, and Hold On protocol",
+        "Take photos for social media"
+      ],
+      correct: 2,
+      explanation: "Following proper safety protocols helps protect you from injury.",
+      points: 10,
+      ageAppropriate: true,
+      type: "single", 
+      difficulty: "basic",
+      tags: [topic.toLowerCase().replace(/[^a-z0-9]/g, '-'), "disaster-preparedness"]
+    },
+    {
+      id: "fallback_3",
+      question: `What should be included in an emergency kit for ${topic.toLowerCase()}?`,
+      options: [
+        "Only food and water",
+        "Water, food, first aid, flashlight, and radio",
+        "Just a phone charger",
+        "Entertainment items only"
+      ],
+      correct: 1,
+      explanation: "A complete emergency kit includes water, food, first aid supplies, flashlight, and communication devices.",
+      points: 10,
+      ageAppropriate: true,
+      type: "single",
+      difficulty: "basic", 
+      tags: [topic.toLowerCase().replace(/[^a-z0-9]/g, '-'), "disaster-preparedness"]
+    }
+  ];
+  
+  return fallbackQuestions.slice(0, Math.min(count, fallbackQuestions.length));
 };
 
 // Generate age-appropriate drill scenarios
@@ -294,7 +389,11 @@ Return only a JSON array of drill steps, no additional text. Create a progressiv
 
   try {
     const response = await callGeminiAPI(prompt);
-    const steps = JSON.parse(response);
+    
+    // Extract JSON from markdown code blocks
+    const cleanedResponse = extractJSONFromMarkdown(response);
+    
+    const steps = JSON.parse(cleanedResponse);
     return Array.isArray(steps) ? steps : [];
   } catch (error) {
     console.error('Error generating drill steps:', error);
@@ -376,11 +475,16 @@ Format as a JSON object with this exact structure:
   ]
 }
 
-Return only the JSON object, no additional text. Create ${finalSectionCount} comprehensive sections with ${assessmentPrompt} challenging assessment questions that test deep understanding and practical application of ${topic} specifically.`;
+Return ONLY the JSON object, no additional text or markdown. Create ${finalSectionCount} sections with ${assessmentPrompt} assessment questions about ${topic}.`;
 
   try {
     const response = await callGeminiAPI(prompt);
-    const module = JSON.parse(response);
+    
+    // Extract JSON from markdown code blocks
+    const cleanedResponse = extractJSONFromMarkdown(response);
+    console.log('Cleaned module response:', cleanedResponse);
+    
+    const module = JSON.parse(cleanedResponse);
     return module;
   } catch (error) {
     console.error('Error generating module content:', error);
@@ -414,7 +518,7 @@ const callGeminiAPI = async (prompt: string): Promise<string> => {
         temperature: 0.7,
         topK: 40,
         topP: 0.95,
-        maxOutputTokens: 2048,
+        maxOutputTokens: 8192,
       },
       safetySettings: [
         {

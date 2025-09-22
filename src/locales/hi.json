@@ -1,0 +1,167 @@
+{
+  "common": {
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफलता",
+    "cancel": "रद्द करें",
+    "save": "सहेजें",
+    "delete": "मिटाएं",
+    "edit": "संपादित करें",
+    "view": "देखें",
+    "back": "वापस",
+    "next": "अगला",
+    "previous": "पिछला",
+    "close": "बंद करें",
+    "open": "खोलें",
+    "search": "खोजें",
+    "filter": "फिल्टर",
+    "sort": "क्रमबद्ध करें",
+    "export": "निर्यात करें",
+    "import": "आयात करें",
+    "download": "डाउनलोड करें",
+    "upload": "अपलोड करें",
+    "submit": "सबमिट करें",
+    "reset": "रीसेट करें",
+    "confirm": "पुष्टि करें",
+    "yes": "हाँ",
+    "no": "नहीं"
+  },
+  "navigation": {
+    "home": "होम",
+    "dashboard": "डैशबोर्ड",
+    "modules": "सीखने के मॉड्यूल",
+    "emergency": "आपातकालीन हब",
+    "alerts": "लाइव अलर्ट",
+    "maps": "आपातकालीन मानचित्र",
+    "tips": "सुरक्षा टिप्स",
+    "communication": "संचार",
+    "analytics": "विश्लेषण",
+    "certificates": "प्रमाणपत्र",
+    "profile": "प्रोफ़ाइल",
+    "settings": "सेटिंग्स",
+    "logout": "लॉग आउट",
+    "login": "साइन इन",
+    "register": "रजिस्टर"
+  },
+  "dashboard": {
+    "welcome": "{{name}} वापस स्वागत है",
+    "subtitle": "अपनी सीखने की प्रगति को ट्रैक करें और तैयार रहें",
+    "stats": {
+      "modulesEnrolled": "मॉड्यूल नामांकित",
+      "completed": "पूर्ण",
+      "badgesEarned": "बैज अर्जित",
+      "preparednessScore": "तैयारी स्कोर"
+    },
+    "learningModules": "सीखने के मॉड्यूल",
+    "viewAnalytics": "विश्लेषण देखें",
+    "viewAll": "सभी देखें",
+    "upcomingDrills": "आगामी ड्रिल",
+    "achievements": "उपलब्धियां",
+    "viewAllBadges": "सभी बैज देखें",
+    "practiceDrills": "मॉड्यूल ड्रिल अभ्यास करें"
+  },
+  "modules": {
+    "title": "सीखने के मॉड्यूल",
+    "subtitle": "इंटरैक्टिव लर्निंग के माध्यम से आपदा तैयारी में महारत हासिल करें",
+    "search": "मॉड्यूल खोजें...",
+    "allModules": "सभी मॉड्यूल",
+    "earthquake": "भूकंप",
+    "fireSafety": "आग सुरक्षा",
+    "flood": "बाढ़",
+    "weather": "मौसम",
+    "medical": "चिकित्सा",
+    "technology": "प्रौद्योगिकी",
+    "count": "{{count}} मॉड्यूल",
+    "duration": "{{duration}}",
+    "lessons": "{{count}} पाठ",
+    "rating": "{{rating}}",
+    "enrolled": "{{count}} नामांकित",
+    "progress": "प्रगति",
+    "completedLessons": "{{total}} में से {{completed}} पाठ पूर्ण",
+    "latestScore": "नवीनतम क्विज स्कोर",
+    "regionSpecific": "क्षेत्र-विशिष्ट सामग्री",
+    "badgesEarned": "बैज अर्जित",
+    "startLearning": "सीखना शुरू करें",
+    "continue": "जारी रखें",
+    "completePrerequisites": "पूर्वापेक्षाएँ पूरी करें",
+    "reviewContent": "सामग्री की समीक्षा करें",
+    "retakeQuiz": "क्विज फिर से लें",
+    "noModulesFound": "कोई मॉड्यूल नहीं मिला",
+    "adjustSearch": "अपनी खोज या फिल्टर मानदंड समायोजित करने का प्रयास करें।"
+  },
+  "emergency": {
+    "title": "आपातकालीन हब",
+    "subtitle": "आपातकालीन संपर्कों और प्रक्रियाओं तक त्वरित पहुंच",
+    "emergencyAlert": "आपातकालीन अलर्ट",
+    "accessEmergency": "आपातकालीन पहुंच",
+    "police": "पुलिस",
+    "fire": "आग",
+    "ambulance": "एम्बुलेंस",
+    "disasterMgmt": "आपदा प्रबंधन",
+    "womenHelpline": "महिला हेल्पलाइन",
+    "childHelpline": "बाल हेल्पलाइन",
+    "emergencyMap": "आपातकालीन मानचित्र उपलब्ध"
+  },
+  "auth": {
+    "signIn": "साइन इन",
+    "signUp": "साइन अप",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "confirmPassword": "पासवर्ड की पुष्टि करें",
+    "firstName": "पहला नाम",
+    "lastName": "अंतिम नाम",
+    "role": "भूमिका",
+    "student": "छात्र",
+    "teacher": "शिक्षक",
+    "admin": "प्रशासक",
+    "officer": "आपदा अधिकारी",
+    "forgotPassword": "पासवर्ड भूल गए?",
+    "rememberMe": "मुझे याद रखें",
+    "signingIn": "साइन इन हो रहा है...",
+    "createAccount": "खाता बनाएं",
+    "alreadyHaveAccount": "पहले से खाता है?",
+    "dontHaveAccount": "खाता नहीं है?",
+    "invalidCredentials": "अमान्य ईमेल या पासवर्ड",
+    "accountCreated": "खाता सफलतापूर्वक बनाया गया",
+    "passwordReset": "पासवर्ड रीसेट ईमेल भेजा गया"
+  },
+  "landing": {
+    "hero": {
+      "title": "DisasterEd: आपकी आपदा तैयारी साथी",
+      "subtitle": "AI-संचालित लर्निंग, रीयल-टाइम अलर्ट और इंटरैक्टिव ट्रेनिंग मॉड्यूल के साथ आपातकालीन प्रतिक्रिया में महारत हासिल करें",
+      "getStarted": "शुरू करें",
+      "learnMore": "और जानें"
+    },
+    "features": {
+      "aiLearning": {
+        "title": "AI-संचालित लर्निंग",
+        "description": "24/7 AI सहायक जो तत्काल आपदा प्रबंधन मार्गदर्शन और शैक्षिक सामग्री प्रदान करता है"
+      },
+      "weatherAlerts": {
+        "title": "रीयल-टाइम मौसम अलर्ट",
+        "description": "आपदा जोखिम मूल्यांकन और आपातकालीन सूचनाओं के साथ लाइव मौसम निगरानी"
+      },
+      "emergencyHub": {
+        "title": "आपातकालीन प्रतिक्रिया हब",
+        "description": "भारतीय आपातकालीन सेवाओं, प्रक्रियाओं और सुरक्षा संसाधनों तक त्वरित पहुंच"
+      },
+      "interactiveMaps": {
+        "title": "इंटरैक्टिव आपातकालीन मानचित्र",
+        "description": "OpenStreetMap एकीकरण जो अस्पताल, अग्निशमन केंद्र और निकासी मार्ग दिखाता है"
+      }
+    },
+    "stats": {
+      "students": "{{count}}+ प्रशिक्षित छात्र",
+      "modules": "{{count}}+ लर्निंग मॉड्यूल",
+      "emergencies": "{{count}}+ आपातकालीन प्रतिक्रियाएं",
+      "countries": "{{count}}+ देशों में सेवा"
+    }
+  },
+  "languages": {
+    "english": "अंग्रेजी",
+    "hindi": "हिंदी",
+    "tamil": "तमिल",
+    "telugu": "तेलुगु",
+    "bengali": "बंगाली"
+  }
+}

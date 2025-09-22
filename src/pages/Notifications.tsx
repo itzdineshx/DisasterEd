@@ -105,7 +105,7 @@ const Notifications = () => {
         notification.severity === 'critical' && "border-red-200 bg-red-50/50"
       )}
     >
-      <CardContent className="p-4">
+      <CardContent className="p-6">
         <div className="flex items-start space-x-3">
           <Checkbox
             checked={selectedNotifications.includes(notification.id)}
@@ -258,7 +258,7 @@ const Notifications = () => {
         {/* Bulk Actions */}
         {selectedNotifications.length > 0 && (
           <Card className="mb-6 bg-primary/5 border-primary/20">
-            <CardContent className="p-4">
+            <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">
                   {selectedNotifications.length} notification(s) selected

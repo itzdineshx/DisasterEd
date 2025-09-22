@@ -28,7 +28,6 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
     { href: "/emergency-map", label: "Emergency Map", icon: Map, show: true, color: "primary" },
     { href: "/live-communication", label: "Communication", icon: MessageSquare, show: true, color: "primary" },
     { href: "/modules", label: "Training Modules", icon: BookOpen, show: userRole !== 'officer', color: "primary" },
-    { href: "/drill-simulator", label: "Drill Simulator", icon: Target, show: userRole !== 'officer', color: "primary" },
     { href: "/progress-analytics", label: "Analytics", icon: BarChart3, show: userRole !== 'officer', color: "primary" },
   ];
 
@@ -53,7 +52,7 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
   };
 
   return (
-    <header className="border-b bg-white/80 backdrop-blur-sm">
+    <header className="border-b bg-white/80 backdrop-blur-sm dark:bg-background/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo and Navigation */}
@@ -70,9 +69,9 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
                   <Link 
                     key={link.href}
                     to={link.href} 
-                    className={`text-muted-foreground hover:text-${link.color} transition-colors flex items-center space-x-1 ${link.color === 'emergency' ? 'font-medium' : ''}`}
+                    className={`text-muted-foreground transition-colors flex items-center space-x-1 ${link.color === 'emergency' ? 'font-medium text-emergency' : ''}`}
                   >
-                    <IconComponent className="h-4 w-4" />
+                    <IconComponent className={`h-4 w-4 ${link.color === 'emergency' ? 'text-emergency' : ''}`} />
                     <span>{link.label}</span>
                   </Link>
                 );
@@ -112,8 +111,8 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center space-x-2">
-                  <div className={`p-1.5 bg-${getRoleColor(userRole)}/10 rounded-full`}>
-                    <User className={`h-4 w-4 text-${getRoleColor(userRole)}`} />
+                  <div className={`p-1.5 ${getRoleColor(userRole) === 'primary' ? 'bg-primary/10 text-primary' : getRoleColor(userRole) === 'safe' ? 'bg-safe/10 text-safe' : getRoleColor(userRole) === 'warning' ? 'bg-warning/10 text-warning' : 'bg-emergency/10 text-emergency'} rounded-full`}>
+                    <User className={`h-4 w-4 ${getRoleColor(userRole) === 'primary' ? 'text-primary' : getRoleColor(userRole) === 'safe' ? 'text-safe' : getRoleColor(userRole) === 'warning' ? 'text-warning' : 'text-emergency'}`} />
                   </div>
                   <div className="hidden sm:block text-left">
                     <div className="text-sm font-medium">{user?.firstName} {user?.lastName}</div>
@@ -159,7 +158,7 @@ export const DashboardHeader = ({ title, subtitle, userRole }: DashboardHeaderPr
               <h1 className="text-3xl font-bold text-foreground">{title}</h1>
               <p className="text-muted-foreground mt-1">{subtitle}</p>
             </div>
-            <Badge variant="outline" className={`text-${getRoleColor(userRole)} border-${getRoleColor(userRole)}/30`}>
+            <Badge variant="outline" className={`border-${getRoleColor(userRole)}/30 ${getRoleColor(userRole) === 'primary' ? 'text-primary' : getRoleColor(userRole) === 'safe' ? 'text-safe' : getRoleColor(userRole) === 'warning' ? 'text-warning' : 'text-emergency'}`}>
               {getRoleLabel(userRole)}
             </Badge>
           </div>

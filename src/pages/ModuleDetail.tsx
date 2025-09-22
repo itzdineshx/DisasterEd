@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useSearchParams } from "react-router-dom";
-import { BookOpen, Clock, Star, Users, Award, Play, CheckCircle, ArrowLeft, Loader2, ChevronLeft, ChevronRight, RotateCcw } from "lucide-react";
+import { BookOpen, Clock, Star, Users, Award, Play, CheckCircle, ArrowLeft, Loader2, ChevronLeft, ChevronRight, RotateCcw, Shield, AlertTriangle, Timer, Download, FileText, Medal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { DashboardHeader } from "@/components/DashboardHeader";
 import { useAuth } from "@/contexts/AuthContext";
-import { generateAgeAppropriateQuiz, generateAgeAppropriateModule, GeneratedQuestion } from "@/services/geminiService";
+import { generateAgeAppropriateQuiz, generateAgeAppropriateModule, generateAgeAppropriateDrill, GeneratedQuestion, GeneratedDrillStep } from "@/services/geminiService";
 import { getModuleById, ModuleData } from "@/data/modulesData";
 
 const ModuleDetail = () => {
@@ -32,10 +32,25 @@ const ModuleDetail = () => {
   const [showResults, setShowResults] = useState(false);
   const [quizStarted, setQuizStarted] = useState(false);
 
+  // Drill simulator state variables
+  const [generatedDrillSteps, setGeneratedDrillSteps] = useState<GeneratedDrillStep[]>([]);
+  const [isLoadingDrill, setIsLoadingDrill] = useState(false);
+  const [currentDrillStep, setCurrentDrillStep] = useState(0);
+  const [drillChoices, setDrillChoices] = useState<Record<number, string>>({});
+  const [drillCompleted, setDrillCompleted] = useState(false);
+  const [drillStarted, setDrillStarted] = useState(false);
+  const [drillScore, setDrillScore] = useState(0);
+  const [drillTimeRemaining, setDrillTimeRemaining] = useState(0);
+
+  // Certificate generation state
+  const [isGeneratingCertificate, setIsGeneratingCertificate] = useState(false);
+  const [certificateUrl, setCertificateUrl] = useState<string | null>(null);
+  const [certificateError, setCertificateError] = useState<string | null>(null);
+
   // Handle URL tab parameter
   useEffect(() => {
     const tabParam = searchParams.get('tab');
-    if (tabParam && ['overview', 'content', 'quiz', 'progress'].includes(tabParam)) {
+    if (tabParam && ['overview', 'content', 'quiz', 'drill', 'progress'].includes(tabParam)) {
       setActiveTab(tabParam);
     }
   }, [searchParams]);
@@ -68,6 +83,22 @@ const ModuleDetail = () => {
       return () => clearTimeout(timer);
     }
   }, [quizStarted, quizCompleted, timeRemaining]);
+
+  // Drill timer effect
+  useEffect(() => {
+    if (drillStarted && !drillCompleted && drillTimeRemaining > 0) {
+      const timer = setTimeout(() => {
+        setDrillTimeRemaining(prev => {
+          if (prev <= 1) {
+            handleDrillChoiceSelect(currentDrillStep, "timeout"); // Auto-select timeout option
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [drillStarted, drillCompleted, drillTimeRemaining, currentDrillStep]);
 
   // Quiz helper functions
   const formatTime = (seconds: number) => {
@@ -115,8 +146,18 @@ const ModuleDetail = () => {
   };
 
   const handleQuizSubmit = () => {
+    const score = calculateScore();
+    const passed = score >= 70;
+    
+    console.log('Quiz completed. Score:', score, 'Passed:', passed);
+    
     setQuizCompleted(true);
     setShowResults(true);
+    
+    // Generate certificate if passed
+    if (passed) {
+      generateCertificate('quiz', score);
+    }
   };
 
   const handleQuizRestart = () => {
@@ -126,6 +167,206 @@ const ModuleDetail = () => {
     setTimeRemaining(1800);
     setQuizCompleted(false);
     setShowResults(false);
+  };
+
+  // Drill helper functions
+  const handleDrillStart = () => {
+    setDrillStarted(true);
+    setCurrentDrillStep(0);
+    setDrillChoices({});
+    setDrillCompleted(false);
+    setDrillScore(0);
+    if (generatedDrillSteps.length > 0) {
+      setDrillTimeRemaining(generatedDrillSteps[0].timeLimit || 30);
+    }
+  };
+
+  const handleDrillChoiceSelect = (stepIndex: number, choiceId: string) => {
+    setDrillChoices(prev => ({
+      ...prev,
+      [stepIndex]: choiceId
+    }));
+
+    const currentStep = generatedDrillSteps[stepIndex];
+    if (currentStep && choiceId !== "timeout") {
+      const choice = currentStep.choices.find(c => c.id === choiceId);
+      if (choice?.correct) {
+        setDrillScore(prev => prev + currentStep.points);
+      }
+    }
+
+    // Move to next step after a delay to show feedback
+    setTimeout(() => {
+      if (stepIndex < generatedDrillSteps.length - 1) {
+        setCurrentDrillStep(prev => prev + 1);
+        const nextStep = generatedDrillSteps[stepIndex + 1];
+        setDrillTimeRemaining(nextStep?.timeLimit || 30);
+      } else {
+        const finalScore = calculateDrillScore();
+        const passed = finalScore >= 70;
+        
+        console.log('Drill completed. Score:', finalScore, 'Passed:', passed);
+        
+        setDrillCompleted(true);
+        
+        // Generate certificate if passed
+        if (passed) {
+          generateCertificate('drill', finalScore);
+        }
+      }
+    }, 2000);
+  };
+
+  const handleDrillRestart = () => {
+    setDrillStarted(false);
+    setCurrentDrillStep(0);
+    setDrillChoices({});
+    setDrillCompleted(false);
+    setDrillScore(0);
+    setDrillTimeRemaining(0);
+  };
+
+  const calculateDrillScore = () => {
+    if (generatedDrillSteps.length === 0) return 0;
+    const maxScore = generatedDrillSteps.reduce((sum, step) => sum + step.points, 0);
+    return maxScore > 0 ? Math.round((drillScore / maxScore) * 100) : 0;
+  };
+
+  // Certificate generation function
+  const generateCertificate = async (type: 'quiz' | 'drill', score: number) => {
+    if (!user?.firstName || !module?.title) {
+      setCertificateError("Missing user or module information for certificate generation");
+      return;
+    }
+
+    setIsGeneratingCertificate(true);
+    setCertificateError(null);
+
+    try {
+      const currentDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+
+      // CraftMyPDF API expects specific format
+      const certificateData = {
+        template_id: 'aec77b2368ad64e6',
+        data: {
+          student_name: `${user.firstName} ${user.lastName}`,
+          course_title: module.title,
+          completion_date: currentDate,
+          score: `${score}%`,
+          achievement_type: type === 'quiz' ? 'Quiz Completion' : 'Drill Simulation',
+          instructor_name: 'DisasterEd Platform',
+          grade: score >= 90 ? 'Excellent' : score >= 80 ? 'Very Good' : score >= 70 ? 'Good' : 'Satisfactory',
+          certificate_id: `${module.id}-${type}-${Date.now()}`,
+          organization: 'DisasterEd Emergency Preparedness Platform'
+        },
+        export_type: 'json',
+        expiration: 300,
+        output_format: 'pdf'
+      };
+
+      console.log('Generating certificate with data:', JSON.stringify(certificateData, null, 2));
+
+      const response = await fetch('https://api.craftmypdf.com/v1/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-KEY': '9d86MjM5NTI6MjQwOTE6b2lnS0x4aFRSWnVQdGU1Ng=='
+        },
+        body: JSON.stringify(certificateData)
+      });
+
+      console.log('API Response status:', response.status);
+      console.log('API Response headers:', Object.fromEntries(response.headers.entries()));
+
+      const responseText = await response.text();
+      console.log('API Response body:', responseText);
+
+      if (!response.ok) {
+        console.error('Certificate generation failed:', response.status, response.statusText, responseText);
+        
+        // Try to parse error response
+        let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
+        try {
+          const errorData = JSON.parse(responseText);
+          if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (errorData.error) {
+            errorMessage = errorData.error;
+          }
+        } catch (parseError) {
+          console.log('Could not parse error response as JSON');
+        }
+        
+        throw new Error(errorMessage);
+      }
+
+      const result = JSON.parse(responseText);
+      console.log('Certificate generation result:', result);
+
+      if (result.file_url || result.url) {
+        const fileUrl = result.file_url || result.url;
+        setCertificateUrl(fileUrl);
+        console.log('Certificate generated successfully:', fileUrl);
+      } else {
+        console.log('Full API response:', result);
+        throw new Error('No certificate URL returned from API');
+      }
+    } catch (error) {
+      console.error('Error generating certificate:', error);
+      
+      // Fallback: Create a simple text-based certificate info
+      const fallbackCertificate = `
+CERTIFICATE OF COMPLETION
+
+Student: ${user.firstName} ${user.lastName}
+Course: ${module.title}
+Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+Score: ${score}%
+Achievement: ${type === 'quiz' ? 'Quiz Completion' : 'Drill Simulation'}
+
+This certifies that the above student has successfully completed
+the ${module.title} module with a score of ${score}% on DisasterEd Platform.
+
+Certificate ID: ${module.id}-${type}-${Date.now()}
+`;
+      
+      // Create a downloadable text file as fallback
+      const blob = new Blob([fallbackCertificate], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      setCertificateUrl(url);
+      
+      // Show a different message for fallback
+      setCertificateError(`API temporarily unavailable. Generated offline certificate instead. Error: ${error instanceof Error ? error.message : 'Failed to generate certificate'}`);
+    } finally {
+      setIsGeneratingCertificate(false);
+    }
+  };
+
+  // Function to download certificate
+  const downloadCertificate = () => {
+    if (certificateUrl) {
+      const link = document.createElement('a');
+      link.href = certificateUrl;
+      
+      // Determine file extension based on URL
+      const isTextCertificate = certificateUrl.startsWith('blob:');
+      const extension = isTextCertificate ? 'txt' : 'pdf';
+      
+      link.download = `${module?.title}_${user?.firstName}_${user?.lastName}_Certificate.${extension}`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      // Clean up blob URL if it's a fallback certificate
+      if (isTextCertificate) {
+        setTimeout(() => URL.revokeObjectURL(certificateUrl), 1000);
+      }
+    }
   };
 
   // Quiz timer effect
@@ -144,31 +385,65 @@ const ModuleDetail = () => {
     }
   }, [quizStarted, quizCompleted, timeRemaining]);
 
+  // Generate age-appropriate content including drill steps
   const generateAgeAppropriateContent = async (moduleData: ModuleData) => {
+    console.log("generateAgeAppropriateContent called with:", { 
+      moduleTitle: moduleData?.title, 
+      userAge: user?.age, 
+      moduleData 
+    });
+
     if (!user?.age) {
+      console.error("User age missing:", user);
       setError("User age information is required for age-appropriate content.");
+      return;
+    }
+
+    if (!moduleData?.title) {
+      console.error("Module data or title missing:", moduleData);
+      setError("Module information is missing.");
       return;
     }
 
     // Generate questions
     setIsLoadingQuestions(true);
+    setError(null); // Clear any previous errors
     try {
+      console.log("Calling generateAgeAppropriateQuiz with:", moduleData.title, user.age);
       const questions = await generateAgeAppropriateQuiz(moduleData.title, user.age);
+      console.log("Generated questions:", questions);
       setGeneratedQuestions(questions);
     } catch (err) {
       console.error("Error generating questions:", err);
-      setError("Failed to generate age-appropriate questions.");
+      setError(`Failed to generate age-appropriate questions: ${err instanceof Error ? err.message : 'Unknown error'}`);
     } finally {
       setIsLoadingQuestions(false);
+    }
+
+    // Generate drill steps
+    setIsLoadingDrill(true);
+    try {
+      console.log("Calling generateAgeAppropriateDrill with:", moduleData.title, user.age);
+      const drillSteps = await generateAgeAppropriateDrill(moduleData.title, user.age);
+      console.log("Generated drill steps:", drillSteps);
+      setGeneratedDrillSteps(drillSteps);
+    } catch (err) {
+      console.error("Error generating drill steps:", err);
+      // Don't set error for drill generation failure, as questions are more important
+    } finally {
+      setIsLoadingDrill(false);
     }
 
     // Generate enhanced content
     setIsLoadingContent(true);
     try {
+      console.log("Calling generateAgeAppropriateModule with:", moduleData.title, user.age);
       const enhanced = await generateAgeAppropriateModule(moduleData.title, user.age);
+      console.log("Generated enhanced content:", enhanced);
       setEnhancedContent(enhanced);
     } catch (err) {
       console.error("Error generating content:", err);
+      // Don't set error for content generation failure, as questions are more important
     } finally {
       setIsLoadingContent(false);
     }
@@ -238,10 +513,11 @@ const ModuleDetail = () => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="content">Content</TabsTrigger>
                 <TabsTrigger value="quiz">Quiz</TabsTrigger>
+                <TabsTrigger value="drill">Drill</TabsTrigger>
                 <TabsTrigger value="progress">Progress</TabsTrigger>
               </TabsList>
 
@@ -369,11 +645,18 @@ const ModuleDetail = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
+                    {/* Error Display */}
+                    {error && (
+                      <Alert className="mb-4">
+                        <AlertDescription>{error}</AlertDescription>
+                      </Alert>
+                    )}
+                    
                     {isLoadingQuestions ? (
                       <div className="flex items-center justify-center py-8">
                         <div className="text-center">
                           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                          <p>Generating age-appropriate questions...</p>
+                          <p>Generating AI questions...</p>
                         </div>
                       </div>
                     ) : generatedQuestions.length > 0 ? (
@@ -524,6 +807,56 @@ const ModuleDetail = () => {
                               })}
                             </div>
 
+                            {/* Certificate Section */}
+                            {calculateScore() >= 70 && (
+                              <div className="border-t pt-6">
+                                <div className="text-center space-y-4">
+                                  <div className="flex items-center justify-center text-success mb-4">
+                                    <Medal className="h-6 w-6 mr-2" />
+                                    <span className="font-semibold text-lg">Congratulations! You passed!</span>
+                                  </div>
+                                  
+                                  {isGeneratingCertificate ? (
+                                    <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+                                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                      <span>Generating your certificate...</span>
+                                    </div>
+                                  ) : certificateUrl ? (
+                                    <div className="space-y-3">
+                                      <div className="flex items-center justify-center text-success mb-2">
+                                        <FileText className="h-5 w-5 mr-2" />
+                                        <span>Your certificate is ready!</span>
+                                      </div>
+                                      {certificateError && certificateError.includes('API temporarily unavailable') && (
+                                        <div className="text-warning text-xs mb-2 p-2 bg-warning/10 rounded">
+                                          Note: Generated offline certificate due to API issue
+                                        </div>
+                                      )}
+                                      <Button 
+                                        onClick={downloadCertificate}
+                                        className="bg-success hover:bg-success/90"
+                                      >
+                                        <Download className="h-4 w-4 mr-2" />
+                                        Download Certificate
+                                      </Button>
+                                    </div>
+                                  ) : certificateError && !certificateUrl ? (
+                                    <div className="text-danger text-sm">
+                                      <p>Certificate generation failed: {certificateError}</p>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={() => generateCertificate('quiz', calculateScore())}
+                                        className="mt-2"
+                                      >
+                                        Try Again
+                                      </Button>
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            )}
+
                             <div className="text-center space-x-4">
                               <Button onClick={handleQuizRestart} variant="outline">
                                 <RotateCcw className="h-4 w-4 mr-2" />
@@ -538,8 +871,297 @@ const ModuleDetail = () => {
                         <p className="text-muted-foreground mb-4">
                           No age-appropriate questions generated yet.
                         </p>
-                        <Button onClick={() => generateAgeAppropriateContent(module)}>
+                        <Button 
+                          onClick={() => {
+                            console.log("Generate Questions clicked, module:", module, "user age:", user?.age);
+                            if (module) {
+                              generateAgeAppropriateContent(module);
+                            } else {
+                              console.error("Module not found for question generation");
+                            }
+                          }}
+                          disabled={!module || !user?.age}
+                        >
                           Generate Questions
+                        </Button>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="drill" className="space-y-6">
+                {/* Age-appropriate Interactive Drill Simulator */}
+                <Card className="shadow-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <Shield className="h-5 w-5" />
+                        <span>{module.title} Drill Simulator</span>
+                      </div>
+                      {user?.age && (
+                        <Badge variant="outline" className="text-primary border-primary/30">
+                          Age {user.age} - {generatedDrillSteps.length} Steps
+                        </Badge>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {/* Error Display */}
+                    {error && (
+                      <Alert className="mb-4">
+                        <AlertDescription>{error}</AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    {isLoadingDrill ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="text-center">
+                          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                          <p>Generating age-appropriate drill scenarios...</p>
+                        </div>
+                      </div>
+                    ) : generatedDrillSteps.length > 0 ? (
+                      <>
+                        {!drillStarted ? (
+                          <div className="text-center space-y-6">
+                            <div className="space-y-2">
+                              <h3 className="text-xl font-semibold">Ready to Practice Emergency Response?</h3>
+                              <p className="text-muted-foreground">
+                                This drill simulation contains {generatedDrillSteps.length} age-appropriate scenarios about {module.title.toLowerCase()}.
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                Each step has a time limit - act quickly but think carefully!
+                              </p>
+                            </div>
+                            <Button onClick={handleDrillStart} size="lg" className="min-w-[200px]">
+                              <Play className="h-4 w-4 mr-2" />
+                              Start Drill Simulation
+                            </Button>
+                          </div>
+                        ) : !drillCompleted ? (
+                          <div className="space-y-6">
+                            {/* Drill Progress Bar */}
+                            <div className="space-y-2">
+                              <div className="flex items-center justify-between text-sm">
+                                <span>Step {currentDrillStep + 1} of {generatedDrillSteps.length}</span>
+                                <span className="text-warning font-mono flex items-center">
+                                  <Timer className="h-4 w-4 mr-1" />
+                                  {drillTimeRemaining}s
+                                </span>
+                              </div>
+                              <Progress 
+                                value={((currentDrillStep + 1) / generatedDrillSteps.length) * 100} 
+                                className="h-2"
+                              />
+                            </div>
+
+                            {/* Current Drill Step */}
+                            {generatedDrillSteps[currentDrillStep] && (
+                              <div className="space-y-4">
+                                <div className="bg-muted/50 p-4 rounded-lg">
+                                  <h3 className="text-lg font-medium mb-2">
+                                    {generatedDrillSteps[currentDrillStep].title}
+                                  </h3>
+                                  <p className="text-muted-foreground mb-2">
+                                    {generatedDrillSteps[currentDrillStep].description}
+                                  </p>
+                                  {generatedDrillSteps[currentDrillStep].visual && (
+                                    <p className="text-sm text-primary bg-primary/10 p-2 rounded">
+                                      <strong>Scene:</strong> {generatedDrillSteps[currentDrillStep].visual}
+                                    </p>
+                                  )}
+                                </div>
+                                
+                                <div className="space-y-3">
+                                  <h4 className="font-medium">What do you do?</h4>
+                                  {generatedDrillSteps[currentDrillStep].choices.map((choice) => {
+                                    const isSelected = drillChoices[currentDrillStep] === choice.id;
+                                    const showFeedback = isSelected && drillChoices[currentDrillStep];
+                                    
+                                    return (
+                                      <div key={choice.id} className="space-y-2">
+                                        <button
+                                          onClick={() => handleDrillChoiceSelect(currentDrillStep, choice.id)}
+                                          disabled={drillChoices[currentDrillStep] !== undefined}
+                                          className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                                            isSelected
+                                              ? choice.correct 
+                                                ? "bg-safe/20 border-safe" 
+                                                : "bg-emergency/20 border-emergency"
+                                              : drillChoices[currentDrillStep]
+                                              ? "bg-muted/50 border-muted opacity-50"
+                                              : "bg-muted hover:bg-muted/80 border-border"
+                                          }`}
+                                        >
+                                          <div className="flex items-start space-x-3">
+                                            <span className="font-medium">
+                                              {choice.id.toUpperCase()}.
+                                            </span>
+                                            <span className="flex-1">{choice.text}</span>
+                                            {isSelected && (
+                                              choice.correct ? 
+                                                <CheckCircle className="h-5 w-5 text-safe" /> : 
+                                                <AlertTriangle className="h-5 w-5 text-emergency" />
+                                            )}
+                                          </div>
+                                        </button>
+                                        
+                                        {showFeedback && (
+                                          <div className={`p-3 rounded-lg text-sm ${
+                                            choice.correct ? "bg-safe/10 text-safe" : "bg-emergency/10 text-emergency"
+                                          }`}>
+                                            <p><strong>Feedback:</strong> {choice.feedback}</p>
+                                            {choice.consequences && (
+                                              <p className="mt-1"><strong>Consequences:</strong> {choice.consequences}</p>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+
+                                {/* Step Info */}
+                                <div className="text-xs text-muted-foreground text-center">
+                                  Points for this step: {generatedDrillSteps[currentDrillStep].points}
+                                  {generatedDrillSteps[currentDrillStep].phase && (
+                                    <span> • Phase: {generatedDrillSteps[currentDrillStep].phase}</span>
+                                  )}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          /* Drill Results */
+                          <div className="space-y-6">
+                            <div className="text-center space-y-4">
+                              <div className="text-6xl">
+                                {calculateDrillScore() >= 80 ? "🛡️" : calculateDrillScore() >= 60 ? "⚠️" : "📚"}
+                              </div>
+                              <h3 className="text-2xl font-bold">
+                                Drill Simulation Complete!
+                              </h3>
+                              <div className="text-4xl font-bold text-primary">
+                                {calculateDrillScore()}%
+                              </div>
+                              <p className="text-muted-foreground">
+                                You scored {drillScore} out of {generatedDrillSteps.reduce((sum, step) => sum + step.points, 0)} points
+                              </p>
+                            </div>
+
+                            {/* Performance Analysis */}
+                            <div className="space-y-4">
+                              <h4 className="font-semibold">Performance Review:</h4>
+                              {generatedDrillSteps.map((step, index) => {
+                                const userChoice = drillChoices[index];
+                                const selectedChoice = step.choices.find(c => c.id === userChoice);
+                                const isCorrect = selectedChoice?.correct || false;
+                                
+                                return (
+                                  <div key={index} className="border rounded-lg p-4 space-y-2">
+                                    <div className="flex items-start justify-between">
+                                      <h5 className="font-medium text-sm">
+                                        Step {index + 1}: {step.title}
+                                      </h5>
+                                      <Badge variant={isCorrect ? "secondary" : "destructive"}>
+                                        {isCorrect ? "Correct" : userChoice === "timeout" ? "Timeout" : "Incorrect"}
+                                      </Badge>
+                                    </div>
+                                    
+                                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                                    
+                                    {selectedChoice && (
+                                      <div className="space-y-1 text-sm">
+                                        <div className={isCorrect ? "text-safe" : "text-emergency"}>
+                                          <strong>Your Action:</strong> {selectedChoice.text}
+                                        </div>
+                                        <div className="text-muted-foreground">
+                                          <strong>Feedback:</strong> {selectedChoice.feedback}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+
+                            {/* Certificate Section */}
+                            {calculateDrillScore() >= 70 && (
+                              <div className="border-t pt-6">
+                                <div className="text-center space-y-4">
+                                  <div className="flex items-center justify-center text-success mb-4">
+                                    <Medal className="h-6 w-6 mr-2" />
+                                    <span className="font-semibold text-lg">Excellent Performance!</span>
+                                  </div>
+                                  
+                                  {isGeneratingCertificate ? (
+                                    <div className="flex items-center justify-center space-x-2 text-muted-foreground">
+                                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                                      <span>Generating your certificate...</span>
+                                    </div>
+                                  ) : certificateUrl ? (
+                                    <div className="space-y-3">
+                                      <div className="flex items-center justify-center text-success mb-2">
+                                        <FileText className="h-5 w-5 mr-2" />
+                                        <span>Your certificate is ready!</span>
+                                      </div>
+                                      {certificateError && certificateError.includes('API temporarily unavailable') && (
+                                        <div className="text-warning text-xs mb-2 p-2 bg-warning/10 rounded">
+                                          Note: Generated offline certificate due to API issue
+                                        </div>
+                                      )}
+                                      <Button 
+                                        onClick={downloadCertificate}
+                                        className="bg-success hover:bg-success/90"
+                                      >
+                                        <Download className="h-4 w-4 mr-2" />
+                                        Download Certificate
+                                      </Button>
+                                    </div>
+                                  ) : certificateError && !certificateUrl ? (
+                                    <div className="text-danger text-sm">
+                                      <p>Certificate generation failed: {certificateError}</p>
+                                      <Button 
+                                        variant="outline" 
+                                        size="sm" 
+                                        onClick={() => generateCertificate('drill', calculateDrillScore())}
+                                        className="mt-2"
+                                      >
+                                        Try Again
+                                      </Button>
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </div>
+                            )}
+
+                            <div className="text-center space-x-4">
+                              <Button onClick={handleDrillRestart} variant="outline">
+                                <RotateCcw className="h-4 w-4 mr-2" />
+                                Restart Drill
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground mb-4">
+                          No age-appropriate drill scenarios generated yet.
+                        </p>
+                        <Button 
+                          onClick={() => {
+                            console.log("Generate Drill clicked, module:", module, "user age:", user?.age);
+                            if (module) {
+                              generateAgeAppropriateContent(module);
+                            } else {
+                              console.error("Module not found for drill generation");
+                            }
+                          }}
+                          disabled={!module || !user?.age}
+                        >
+                          Generate Drill Scenarios
                         </Button>
                       </div>
                     )}
@@ -635,11 +1257,17 @@ const ModuleDetail = () => {
                       <Play className="h-4 w-4 mr-2" />
                       {generatedQuestions.length > 0 ? 'Take Age-Appropriate Quiz' : 'Go to Quiz'}
                     </Button>
-                    <Button variant="outline" className="w-full" asChild>
-                      <Link to={`/drill-simulator/${module.id}`}>
-                        <Play className="h-4 w-4 mr-2" />
-                        Practice Drills
-                      </Link>
+                    <Button variant="outline" className="w-full" 
+                      onClick={() => {
+                        const tabTrigger = document.querySelector('[data-value="drill"]') as HTMLElement;
+                        tabTrigger?.click();
+                        if (generatedDrillSteps.length > 0 && !drillStarted) {
+                          handleDrillStart();
+                        }
+                      }}
+                    >
+                      <Shield className="h-4 w-4 mr-2" />
+                      {generatedDrillSteps.length > 0 ? 'Practice Age-Appropriate Drills' : 'Go to Drills'}
                     </Button>
                   </>
                 )}

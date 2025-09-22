@@ -17,12 +17,12 @@ const QuickEmergencyPanel: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
 
   const emergencyContacts: EmergencyContact[] = [
-    { name: 'Police', number: '100', type: 'emergency', color: 'bg-red-500 hover:bg-red-600' },
-    { name: 'Fire', number: '101', type: 'fire', color: 'bg-orange-500 hover:bg-orange-600' },
-    { name: 'Ambulance', number: '102', type: 'medical', color: 'bg-green-500 hover:bg-green-600' },
-    { name: 'Disaster Mgmt', number: '108', type: 'disaster', color: 'bg-blue-500 hover:bg-blue-600' },
-    { name: 'Women Helpline', number: '1091', type: 'women', color: 'bg-pink-500 hover:bg-pink-600' },
-    { name: 'Child Helpline', number: '1098', type: 'child', color: 'bg-purple-500 hover:bg-purple-600' },
+    { name: 'Police', number: '100', type: 'emergency', color: '' },
+    { name: 'Fire', number: '101', type: 'fire', color: '' },
+    { name: 'Ambulance', number: '102', type: 'medical', color: '' },
+    { name: 'Disaster Mgmt', number: '108', type: 'disaster', color: '' },
+    { name: 'Women Helpline', number: '1091', type: 'women', color: '' },
+    { name: 'Child Helpline', number: '1098', type: 'child', color: '' },
   ];
 
   if (!isVisible) return null;
@@ -30,13 +30,13 @@ const QuickEmergencyPanel: React.FC = () => {
   return (
     <div className="fixed bottom-4 left-4 z-50 max-w-sm">
       <Card className={cn(
-        "bg-white/95 backdrop-blur-sm border-2 border-red-200 shadow-lg transition-all duration-300",
+        "card-enhanced backdrop-blur-sm transition-all duration-300",
         isMinimized ? "h-16" : "h-auto"
       )}>
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-sm">
-              <AlertTriangle className="h-4 w-4 text-red-500" />
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <AlertTriangle className="h-4 w-4 text-emergency" />
               Quick Emergency Access
             </CardTitle>
             <div className="flex gap-1">
@@ -62,16 +62,30 @@ const QuickEmergencyPanel: React.FC = () => {
         
         {!isMinimized && (
           <CardContent className="space-y-3">
+            {/* SOS Emergency Button */}
+            <div className="flex justify-center">
+              <Button
+                size="lg"
+                className="w-20 h-20 rounded-full btn-emergency-enhanced border-4 border-emergency/40 shadow-lg animate-pulse-glow flex flex-col items-center justify-center gap-1"
+                aria-label="Call SOS"
+                onClick={() => window.open('tel:911')}
+              >
+                <AlertTriangle className="h-6 w-6" />
+                <span className="text-xs font-bold">SOS</span>
+              </Button>
+            </div>
+            
             <div className="grid grid-cols-2 gap-2">
               {emergencyContacts.slice(0, 4).map((contact, index) => (
                 <Button
                   key={index}
                   size="sm"
-                  className={cn("text-white text-xs h-8", contact.color)}
+                  className={cn("text-white text-xs h-8 btn-emergency-enhanced", contact.color)}
                   onClick={() => window.open(`tel:${contact.number}`)}
+                  aria-label={`Call ${contact.name} at ${contact.number}`}
                 >
                   <Phone className="h-3 w-3 mr-1" />
-                  {contact.name} {contact.number}
+                  <span className="truncate">{contact.name} {contact.number}</span>
                 </Button>
               ))}
             </div>
@@ -82,17 +96,18 @@ const QuickEmergencyPanel: React.FC = () => {
                   key={index}
                   size="sm"
                   variant="outline"
-                  className="text-xs h-8 border-gray-300"
+                  className="text-xs h-8"
                   onClick={() => window.open(`tel:${contact.number}`)}
+                  aria-label={`Call ${contact.name} at ${contact.number}`}
                 >
                   <Phone className="h-3 w-3 mr-1" />
-                  {contact.name}: {contact.number}
+                  <span className="truncate">{contact.name}: {contact.number}</span>
                 </Button>
               ))}
             </div>
             
             <div className="pt-2 border-t">
-              <Badge variant="secondary" className="text-xs w-full justify-center">
+              <Badge variant="secondary" className="text-xs w-full justify-center status-info">
                 🗺️ Emergency Map Available
               </Badge>
             </div>
