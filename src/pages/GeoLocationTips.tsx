@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
+import { DashboardHeader } from "@/components/DashboardHeader";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LocationData {
   latitude: number;
@@ -43,6 +45,7 @@ interface PreparednessTip {
 }
 
 const GeoLocationTips = () => {
+  const { user } = useAuth();
   const [location, setLocation] = useState<LocationData | null>(null);
   const [weather, setWeather] = useState<WeatherCondition | null>(null);
   const [disasters, setDisasters] = useState<DisasterRisk[]>([]);
@@ -268,27 +271,11 @@ const GeoLocationTips = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
-      <header className="bg-gradient-primary text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link to="/" className="flex items-center space-x-2">
-              <MapPin className="h-8 w-8" />
-              <span className="font-bold text-xl">Location-Based Tips</span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              {location && (
-                <div className="hidden sm:flex items-center space-x-2 text-sm">
-                  <MapPin className="h-4 w-4" />
-                  <span>{location.city}, {location.state}</span>
-                </div>
-              )}
-              <Button variant="secondary" asChild>
-                <Link to="/emergency">Back to Emergency</Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </header>
+      <DashboardHeader 
+        title="Location-Based Tips"
+        subtitle={location ? `Personalized emergency preparedness for ${location.city}, ${location.state}` : "Get location-specific disaster preparedness guidance"}
+        userRole={user?.role as "student" | "teacher" | "admin" | "officer" || 'student'}
+      />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Breadcrumb */}

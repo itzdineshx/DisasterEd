@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CheckCircle, XCircle, Clock, Award, ArrowRight, ArrowLeft, RotateCcw, Home } from "lucide-react";
+import { CheckCircle, XCircle, Clock, Award, ArrowRight, ArrowLeft, RotateCcw, Home, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,76 +8,160 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { useParams, Link } from "react-router-dom";
 import { DashboardHeader } from "@/components/DashboardHeader";
+import { useAuth } from "@/contexts/AuthContext";
+import { generateAgeAppropriateQuiz, GeneratedQuestion } from "@/services/geminiService";
+import { modulesData, getModuleById } from "@/data/modulesData";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Quiz = () => {
   const { moduleId } = useParams();
+  const { user } = useAuth();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<number, string>>({});
   const [timeRemaining, setTimeRemaining] = useState(1800); // 30 minutes
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [questions, setQuestions] = useState<GeneratedQuestion[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [moduleTitle, setModuleTitle] = useState<string>("Emergency Safety Quiz");
+
+  // Generate age-appropriate questions based on module
+  useEffect(() => {
+    const generateQuestions = async () => {
+      if (!user?.age) {
+        setError("User age information is required to generate appropriate questions.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Initialize variables outside try block for error handling scope
+      let topicName = "Emergency Safety";
+      let quizTitle = "Emergency Safety Quiz";
+
+      try {
+        setIsLoading(true);
+        
+        console.log('Quiz moduleId:', moduleId);
+        
+        // Get the actual module title instead of just converting moduleId
+        if (moduleId) {
+          const moduleData = getModuleById(moduleId);
+          console.log('Module data found:', moduleData);
+          if (moduleData) {
+            topicName = moduleData.title;
+            quizTitle = `${moduleData.title} Quiz`;
+            console.log('Using module title:', topicName);
+          } else {
+            // Fallback: convert moduleId to readable format
+            topicName = moduleId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            quizTitle = `${topicName} Quiz`;
+            console.log('Using fallback title:', topicName);
+          }
+        }
+        
+        setModuleTitle(quizTitle);
+        console.log('Final topic for AI generation:', topicName);
+        
+        const generatedQuestions = await generateAgeAppropriateQuiz(topicName, user.age);
+        
+        console.log('Generated questions for topic:', topicName, 'Questions:', generatedQuestions);
+        
+        if (generatedQuestions && generatedQuestions.length > 0) {
+          console.log('Using AI-generated questions');
+          setQuestions(generatedQuestions);
+        } else {
+          console.warn('AI generation failed or returned empty results, using fallback questions');
+          // Fallback to default questions if generation fails
+          setQuestions(defaultQuizData.questions);
+        }
+      } catch (err) {
+        console.error("Error generating questions for topic:", topicName, "Error:", err);
+        setError(`Failed to generate questions for ${topicName}. Using default questions.`);
+        setQuestions(defaultQuizData.questions);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    generateQuestions();
+  }, [moduleId, user?.age]);
 
   const quizData = {
-    title: "Earthquake Safety Fundamentals Quiz",
-    description: "Test your knowledge of earthquake preparedness and response procedures",
+    title: moduleTitle,
+    description: `Test your knowledge of ${moduleTitle.replace(' Quiz', '')} procedures and best practices`,
+    timeLimit: 1800,
+    passingScore: 70,
+    totalQuestions: questions.length,
+    questions: questions
+  };
+
+  // Default fallback questions
+  const defaultQuizData = {
+    title: moduleTitle,
+    description: `Test your knowledge of ${moduleTitle.replace(' Quiz', '')} procedures and best practices`,
     timeLimit: 1800,
     passingScore: 70,
     totalQuestions: 10,
     questions: [
       {
-        id: 1,
-        question: "What is the recommended action during earthquake shaking?",
+        id: "1",
+        question: "What is the most important first step in any emergency situation?",
         options: [
-          "Run outside immediately",
-          "Stand in a doorway",
-          "Drop, Cover, and Hold On",
-          "Call for help first"
+          "Call 911 immediately",
+          "Assess the situation for immediate dangers",
+          "Start evacuation procedures",
+          "Gather emergency supplies"
         ],
-        correct: 2,
-        explanation: "Drop, Cover, and Hold On is the internationally recognized response to earthquake shaking.",
-        points: 10
+        correct: 1,
+        explanation: "Assessing the situation first helps you understand the immediate dangers and make informed decisions about next steps.",
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 2,
-        question: "Which location is safest during an earthquake if you're indoors?",
+        id: "2",
+        question: "What should be included in every emergency kit?",
         options: [
-          "Under a sturdy desk or table",
-          "Near a window",
-          "In an elevator",
-          "Against an interior wall without heavy objects"
-        ],
-        correct: 0,
-        explanation: "A sturdy desk or table provides protection from falling objects and debris.",
-        points: 10
-      },
-      {
-        id: 3,
-        question: "How long should you hold your earthquake position?",
-        options: [
-          "Until the shaking stops",
-          "For exactly 30 seconds",
-          "Until help arrives",
-          "Until the shaking stops and a few seconds after"
-        ],
-        correct: 3,
-        explanation: "Hold your position until shaking stops completely and a few seconds after to ensure it's over.",
-        points: 10
-      },
-      {
-        id: 4,
-        question: "What should be in your earthquake emergency kit?",
-        options: [
-          "Only water and food",
-          "Water, food, first aid, flashlight, radio, and batteries",
-          "Just a flashlight",
+          "Only food and water",
+          "Water, food, first aid supplies, and communication devices",
+          "Just communication devices",
           "Only important documents"
         ],
         correct: 1,
-        explanation: "A comprehensive kit includes water, non-perishable food, first aid supplies, flashlight, battery-powered radio, extra batteries, and other essentials.",
-        points: 10
+        explanation: "A comprehensive emergency kit should include water, non-perishable food, first aid supplies, communication devices, and important documents.",
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 5,
+        id: "3",
+        question: "How often should you review and update your emergency plan?",
+        options: [
+          "Once a year",
+          "Every few years",
+          "Every six months",
+          "Only after an emergency occurs"
+        ],
+        correct: 2,
+        explanation: "Emergency plans should be reviewed and updated every six months to ensure information stays current and all family members remember procedures.",
+        points: 10,
+        ageAppropriate: false
+      },
+      {
+        id: "4",
+        question: "What is the best way to stay informed during an emergency?",
+        options: [
+          "Social media only",
+          "Battery-powered or hand-crank radio",
+          "Calling friends and family",
+          "Watching TV only"
+        ],
+        correct: 1,
+        explanation: "A battery-powered or hand-crank radio ensures you can receive emergency broadcasts even when power is out.",
+        points: 10,
+        ageAppropriate: false
+      },
+      {
+        id: "5",
         question: "If you're driving during an earthquake, you should:",
         options: [
           "Speed up to get home quickly",
@@ -87,10 +171,11 @@ const Quiz = () => {
         ],
         correct: 2,
         explanation: "Pull over safely away from bridges, overpasses, and power lines, then stay in your vehicle.",
-        points: 10
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 6,
+        id: "6",
         question: "Which of these is a common earthquake myth?",
         options: [
           "Earthquakes can happen anywhere",
@@ -100,10 +185,11 @@ const Quiz = () => {
         ],
         correct: 1,
         explanation: "Standing in doorways is outdated advice. Modern doorways aren't stronger than other parts of the house.",
-        points: 10
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 7,
+        id: "7",
         question: "What should you do immediately after earthquake shaking stops?",
         options: [
           "Run outside as fast as possible",
@@ -113,10 +199,11 @@ const Quiz = () => {
         ],
         correct: 1,
         explanation: "First check for injuries and hazards, then evacuate carefully if the building is damaged.",
-        points: 10
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 8,
+        id: "8",
         question: "How much water should you store per person for emergencies?",
         options: [
           "1 gallon per day for 3 days",
@@ -126,10 +213,11 @@ const Quiz = () => {
         ],
         correct: 0,
         explanation: "Store at least 1 gallon of water per person per day for a minimum of 3 days.",
-        points: 10
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 9,
+        id: "9",
         question: "Which building type is generally safest during earthquakes?",
         options: [
           "Unreinforced masonry buildings",
@@ -139,10 +227,11 @@ const Quiz = () => {
         ],
         correct: 1,
         explanation: "Modern buildings constructed according to current seismic building codes are designed to withstand earthquakes.",
-        points: 10
+        points: 10,
+        ageAppropriate: false
       },
       {
-        id: 10,
+        id: "10",
         question: "What is the 'Triangle of Life' theory?",
         options: [
           "A proven earthquake safety method",
@@ -152,7 +241,8 @@ const Quiz = () => {
         ],
         correct: 1,
         explanation: "The 'Triangle of Life' theory has been debunked by earthquake safety experts and is not recommended.",
-        points: 10
+        points: 10,
+        ageAppropriate: false
       }
     ]
   };
@@ -295,7 +385,7 @@ const Quiz = () => {
                       <Card key={question.id} className={`border-l-4 ${
                         isCorrect ? "border-l-safe" : "border-l-emergency"
                       }`}>
-                        <CardContent className="p-4">
+                        <CardContent className="p-6">
                           <div className="flex items-start space-x-3">
                             {isCorrect ? (
                               <CheckCircle className="h-5 w-5 text-safe mt-0.5" />
@@ -358,11 +448,6 @@ const Quiz = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
-      <DashboardHeader 
-        title="Quiz in Progress"
-        subtitle="Answer all questions to complete the module"
-        userRole="student"
-      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-6">
@@ -372,12 +457,36 @@ const Quiz = () => {
           <span>/</span>
           <span>Quiz</span>
         </div>
-        {/* Quiz Header */}
-        <Card className="mb-6 shadow-card">
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <div>
-                <CardTitle className="text-2xl">{quizData.title}</CardTitle>
+
+        {/* Loading State */}
+        {isLoading && (
+          <Card className="mb-6 shadow-card">
+            <CardContent className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                <p className="text-lg font-medium">Generating age-appropriate questions...</p>
+                <p className="text-muted-foreground">Customizing content for age {user?.age}</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <Alert className="mb-6">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {/* Quiz Content */}
+        {!isLoading && questions.length > 0 && (
+          <>
+            {/* Quiz Header */}
+            <Card className="mb-6 shadow-card">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle className="text-xl">{quizData.title}</CardTitle>
                 <p className="text-muted-foreground mt-1">{quizData.description}</p>
               </div>
               <div className="text-right">
@@ -497,6 +606,8 @@ const Quiz = () => {
             </div>
           </CardContent>
         </Card>
+          </>
+        )}
       </div>
     </div>
   );

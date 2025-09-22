@@ -4,6 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
+import { TranslationProvider } from "@/contexts/TranslationContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import FloatingAIChatbot from "@/components/FloatingAIChatbot";
 
@@ -15,8 +17,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import TeacherDashboard from "./pages/TeacherDashboard";
 import ProgressAnalytics from "./pages/ProgressAnalytics";
 import Modules from "./pages/Modules";
-import Quiz from "./pages/Quiz";
-import DrillSimulator from "./pages/DrillSimulator";
+import ModuleDetail from "./pages/ModuleDetail";
 import Emergency from "./pages/Emergency";
 import NotFound from "./pages/NotFound";
 import RealTimeAlerts from "./pages/RealTimeAlerts";
@@ -26,16 +27,19 @@ import OfficerDashboard from "./pages/OfficerDashboard";
 import Profile from "./pages/Profile";
 import Notifications from "./pages/Notifications";
 import EmergencyMap from "./pages/EmergencyMap";
+import ComplexityDemo from "./components/ComplexityDemo";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+    <ThemeProvider defaultTheme="system" storageKey="disaster-ed-theme">
+      <TranslationProvider>
+        <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
           <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -70,17 +74,13 @@ const App = () => (
               <Modules />
             </ProtectedRoute>
           } />
-          <Route path="/quiz/:moduleId" element={
+          <Route path="/module/:id" element={
             <ProtectedRoute>
-              <Quiz />
-            </ProtectedRoute>
-          } />
-          <Route path="/drill-simulator" element={
-            <ProtectedRoute>
-              <DrillSimulator />
+              <ModuleDetail />
             </ProtectedRoute>
           } />
           <Route path="/emergency" element={<Emergency />} />
+          <Route path="/complexity-demo" element={<ComplexityDemo />} />
           <Route path="/real-time-alerts" element={<RealTimeAlerts />} />
           <Route path="/geo-location-tips" element={<GeoLocationTips />} />
           <Route path="/live-communication" element={<LiveCommunication />} />
@@ -106,6 +106,8 @@ const App = () => (
       </BrowserRouter>
     </TooltipProvider>
   </AuthProvider>
+      </TranslationProvider>
+    </ThemeProvider>
 </QueryClientProvider>
 );
 

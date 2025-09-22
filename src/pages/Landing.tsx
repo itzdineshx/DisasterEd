@@ -3,43 +3,47 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import heroImage from "@/assets/hero-disaster-prep.jpg";
 import WeatherWidget from "@/components/WeatherWidget";
 import QuickEmergencyPanel from "@/components/QuickEmergencyPanel";
 import DisasterPreparednessSection from "@/components/DisasterPreparednessSection";
 import ThemeToggle from "@/components/ThemeToggle";
 import LanguageSelector from "@/components/LanguageSelector";
+import { useTranslation } from "@/contexts/TranslationContext";
 
 const Landing = () => {
+  const { t } = useTranslation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const features = [
     {
       icon: BookOpen,
-      title: "AI-Powered Learning",
-      description: "24/7 AI assistant providing instant disaster management guidance and educational content",
+      title: t('landing.features.aiLearning.title'),
+      description: t('landing.features.aiLearning.description'),
       color: "primary",
       link: "#",
       gradient: "from-blue-500 to-purple-600"
     },
     {
       icon: Cloud,
-      title: "Real-Time Weather Alerts",
-      description: "Live weather monitoring with disaster risk assessment and emergency notifications",
+      title: t('landing.features.weatherAlerts.title'),
+      description: t('landing.features.weatherAlerts.description'),
       color: "warning",
       link: "/real-time-alerts",
       gradient: "from-yellow-500 to-orange-600"
     },
     {
       icon: AlertTriangle,
-      title: "Emergency Response Hub",
-      description: "Quick access to Indian emergency services, procedures, and safety resources",
+      title: t('landing.features.emergencyHub.title'),
+      description: t('landing.features.emergencyHub.description'),
       color: "emergency",
       link: "/emergency",
       gradient: "from-red-500 to-pink-600"
     },
     {
       icon: MapPin,
-      title: "Interactive Emergency Maps",
-      description: "OpenStreetMap integration showing hospitals, fire stations, and evacuation routes",
+      title: t('landing.features.interactiveMaps.title'),
+      description: t('landing.features.interactiveMaps.description'),
       color: "safe",
       link: "/emergency-map",
       gradient: "from-green-500 to-teal-600"
@@ -79,10 +83,10 @@ const Landing = () => {
   ];
 
   const stats = [
-    { number: "50,000+", label: "Students Trained" },
-    { number: "1,200+", label: "Schools Connected" },
-    { number: "25", label: "Disaster Types Covered" },
-    { number: "99.5%", label: "Preparedness Score" }
+    { number: "50,000+", label: t('landing.stats.students', { count: '50,000+' }) },
+    { number: "1,200+", label: t('landing.stats.modules', { count: '1,200+' }) },
+    { number: "25", label: t('landing.stats.emergencies', { count: '25' }) },
+    { number: "99.5%", label: t('landing.stats.countries', { count: '99.5%' }) }
   ];
 
   const emergencyNumbers = [
@@ -97,18 +101,21 @@ const Landing = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary/30">
       {/* Enhanced Header */}
-      <header className="border-b bg-white/90 dark:bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+  <header className="border-b bg-white/90 dark:bg-background/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2 animate-fade-in">
-              <div className="p-2 bg-gradient-to-r from-red-500 to-pink-600 rounded-lg">
-                <Shield className="h-6 w-6 text-white" />
+              <div className="p-2 theme-gradient-emergency rounded-lg">
+                <Shield className="h-6 w-6 text-emergency-foreground" />
               </div>
-              <span className="font-bold text-xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">DisasterEd</span>
+              <span className="font-bold text-xl text-foreground">DisasterEd</span>
             </div>
             
             {/* Mobile menu button */}
-            <button className="md:hidden p-2 text-muted-foreground hover:text-primary">
+            <button 
+              className="md:hidden p-2 text-muted-foreground hover:text-primary"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               </svg>
@@ -116,35 +123,79 @@ const Landing = () => {
 
             <nav className="hidden md:flex space-x-6">
               <Link to="/emergency" className="text-muted-foreground hover:text-emergency transition-all font-medium hover-scale flex items-center space-x-1">
-                <AlertTriangle className="h-4 w-4" />
-                <span>Emergency</span>
+                <AlertTriangle className="h-4 w-4 text-emergency" />
+                <span>{t('navigation.emergency')}</span>
               </Link>
               <Link to="/emergency-map" className="text-muted-foreground hover:text-primary transition-all font-medium hover-scale flex items-center space-x-1">
-                <MapPin className="h-4 w-4" />
-                <span>Maps</span>
+                <MapPin className="h-4 w-4 text-primary" />
+                <span>{t('navigation.maps')}</span>
               </Link>
               <Link to="/real-time-alerts" className="text-muted-foreground hover:text-warning transition-all font-medium hover-scale flex items-center space-x-1">
-                <Cloud className="h-4 w-4" />
-                <span>Alerts</span>
+                <Cloud className="h-4 w-4 text-warning" />
+                <span>{t('navigation.alerts')}</span>
               </Link>
               <Link to="/geo-location-tips" className="text-muted-foreground hover:text-safe transition-all font-medium hover-scale flex items-center space-x-1">
-                <Globe className="h-4 w-4" />
-                <span>Safety Tips</span>
+                <Globe className="h-4 w-4 text-safe" />
+                <span>{t('navigation.tips')}</span>
               </Link>
             </nav>
             <div className="hidden md:flex items-center space-x-3">
               <ThemeToggle />
               <LanguageSelector />
               <Button variant="outline" className="hover-scale" asChild>
-                <Link to="/login">Sign In</Link>
-              </Button>
-              <Button className="bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 hover-scale animate-pulse-glow" asChild>
-                <Link to="/login">Get Started</Link>
+                <Link to="/login">{t('navigation.login')}</Link>
               </Button>
             </div>
           </div>
         </div>
       </header>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-b shadow-lg">
+          <div className="px-4 py-4 space-y-4">
+            <Link 
+              to="/emergency" 
+              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/10 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <AlertTriangle className="h-5 w-5 text-emergency" />
+              <span className="font-medium">{t('navigation.emergency')}</span>
+            </Link>
+            <Link 
+              to="/emergency-map" 
+              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/10 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <MapPin className="h-5 w-5 text-primary" />
+              <span className="font-medium">{t('navigation.maps')}</span>
+            </Link>
+            <Link 
+              to="/real-time-alerts" 
+              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/10 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Cloud className="h-5 w-5 text-warning" />
+              <span className="font-medium">{t('navigation.alerts')}</span>
+            </Link>
+            <Link 
+              to="/geo-location-tips" 
+              className="flex items-center space-x-3 p-3 rounded-lg hover:bg-primary/10 transition-colors"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <Globe className="h-5 w-5 text-safe" />
+              <span className="font-medium">{t('navigation.tips')}</span>
+            </Link>
+            <div className="border-t pt-4 flex items-center space-x-3">
+              <ThemeToggle />
+              <LanguageSelector />
+              <Button variant="outline" className="flex-1" asChild>
+                <Link to="/login" onClick={() => setIsMobileMenuOpen(false)}>{t('navigation.login')}</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Enhanced Hero Section */}
       <section className="relative py-12 sm:py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-background via-primary/5 to-secondary/10 overflow-hidden">
@@ -162,14 +213,10 @@ const Landing = () => {
                   🚨 India's #1 Emergency Preparedness Platform
                 </Badge>
                 <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight bg-gradient-to-r from-primary via-purple-600 to-pink-600 bg-clip-text text-transparent animate-scale-in">
-                  Master Disaster
-                  <br />Response &
-                  <br />Save Lives
+                  {t('landing.hero.title')}
                 </h1>
                 <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                  India's most comprehensive disaster education platform trusted by educational institutions nationwide. 
-                  Interactive training, real-time weather alerts, AI-powered guidance, OpenStreetMap integration,
-                  and Indian emergency response tools to build truly prepared communities.
+                  {t('landing.hero.subtitle')}
                 </p>
               </div>
               
@@ -185,10 +232,10 @@ const Landing = () => {
               
               <div className="flex flex-col sm:flex-row gap-4 animate-fade-in" style={{animationDelay: '200ms'}}>
                 <Button size="lg" className="bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-semibold px-8 py-4 text-lg hover-scale animate-pulse-glow shadow-lg" asChild>
-                  <Link to="/login">🚀 Start Training Now</Link>
+                  <Link to="/login">{t('landing.hero.getStarted')}</Link>
                 </Button>
                 <Button size="lg" variant="outline" className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-8 py-4 text-lg hover-scale transition-all" asChild>
-                  <Link to="/emergency">🚨 Emergency Hub</Link>
+                  <Link to="/emergency">{t('landing.hero.learnMore')}</Link>
                 </Button>
               </div>
 
@@ -205,7 +252,8 @@ const Landing = () => {
                   {/* Police */}
                   <button
                     onClick={() => window.open('tel:100')}
-                    className="bg-red-500 hover:bg-red-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
+                    className="rounded-xl p-4 transition-all hover-scale group shadow-lg btn-emergency-enhanced"
+                    aria-label="Call Police"
                   >
                     <div className="flex items-center justify-between">
                       <Phone className="h-5 w-5 group-hover:animate-pulse" />
@@ -219,7 +267,8 @@ const Landing = () => {
                   {/* Fire Brigade */}
                   <button
                     onClick={() => window.open('tel:101')}
-                    className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
+                    className="rounded-xl p-4 transition-all hover-scale group shadow-lg btn-primary-enhanced"
+                    aria-label="Call Fire Brigade"
                   >
                     <div className="flex items-center justify-between">
                       <Phone className="h-5 w-5 group-hover:animate-pulse" />
@@ -233,7 +282,8 @@ const Landing = () => {
                   {/* Ambulance */}
                   <button
                     onClick={() => window.open('tel:102')}
-                    className="bg-green-500 hover:bg-green-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
+                    className="rounded-xl p-4 transition-all hover-scale group shadow-lg btn-safe-enhanced"
+                    aria-label="Call Ambulance"
                   >
                     <div className="flex items-center justify-between">
                       <Phone className="h-5 w-5 group-hover:animate-pulse" />
@@ -247,7 +297,8 @@ const Landing = () => {
                   {/* Disaster Management */}
                   <button
                     onClick={() => window.open('tel:108')}
-                    className="bg-blue-500 hover:bg-blue-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
+                    className="rounded-xl p-4 transition-all hover-scale group shadow-lg btn-primary-enhanced"
+                    aria-label="Call Disaster Management"
                   >
                     <div className="flex items-center justify-between">
                       <Phone className="h-5 w-5 group-hover:animate-pulse" />
@@ -261,7 +312,8 @@ const Landing = () => {
                   {/* Women Helpline */}
                   <button
                     onClick={() => window.open('tel:1091')}
-                    className="bg-purple-500 hover:bg-purple-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
+                    className="rounded-xl p-4 transition-all hover-scale group shadow-lg btn-primary-enhanced"
+                    aria-label="Call Women Helpline"
                   >
                     <div className="flex items-center justify-between">
                       <Phone className="h-5 w-5 group-hover:animate-pulse" />
@@ -275,7 +327,8 @@ const Landing = () => {
                   {/* Child Helpline */}
                   <button
                     onClick={() => window.open('tel:1098')}
-                    className="bg-pink-500 hover:bg-pink-600 text-white rounded-xl p-4 transition-all hover-scale group shadow-lg"
+                    className="rounded-xl p-4 transition-all hover-scale group shadow-lg btn-primary-enhanced"
+                    aria-label="Call Child Helpline"
                   >
                     <div className="flex items-center justify-between">
                       <Phone className="h-5 w-5 group-hover:animate-pulse" />
@@ -507,7 +560,7 @@ const Landing = () => {
               <Button size="lg" variant="secondary" className="px-8 py-4 text-lg font-semibold hover-scale bg-white text-primary hover:bg-white/90 shadow-2xl" asChild>
                 <Link to="/login">🚀 Get Started Free</Link>
               </Button>
-              <Button size="lg" variant="outline" className="px-8 py-4 text-lg font-semibold hover-scale border-2 border-white text-white hover:bg-white hover:text-primary" asChild>
+              <Button size="lg" variant="outline" className="px-8 py-4 text-lg font-semibold hover-scale bg-white text-primary hover:bg-white/90 shadow-2xl" asChild>
                 <Link to="/emergency">🚨 Try Emergency Hub</Link>
               </Button>
             </div>

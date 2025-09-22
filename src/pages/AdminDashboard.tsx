@@ -159,9 +159,9 @@ const AdminDashboard = () => {
           })}
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Main Content */}
-          <div className="dashboard-main space-y-6 lg:space-y-8">
+          <div className="dashboard-main space-y-6 lg:space-y-8 lg:col-span-2 order-2 lg:order-1">
             {/* Module Engagement */}
             <Card className="shadow-card">
               <CardHeader>
@@ -238,7 +238,7 @@ const AdminDashboard = () => {
           </div>
 
           {/* Sidebar */}
-          <div className="dashboard-sidebar space-y-4 sm:space-y-6">
+          <div className="dashboard-sidebar space-y-4 sm:space-y-6 lg:col-span-1 order-1 lg:order-2">
             {/* Recent Activity */}
             <Card className="shadow-card">
               <CardHeader>

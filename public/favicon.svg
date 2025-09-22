@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="crossGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ef4444;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Shield background -->
+  <path d="M16 2 L28 6 L28 16 C28 22 24 26 16 30 C8 26 4 22 4 16 L4 6 Z"
+        fill="url(#shieldGradient)"
+        stroke="#1e3a8a"
+        stroke-width="1.5"/>
+
+  <!-- Emergency cross -->
+  <rect x="14" y="10" width="4" height="12" fill="url(#crossGradient)" rx="0.5"/>
+  <rect x="10" y="14" width="12" height="4" fill="url(#crossGradient)" rx="0.5"/>
+
+  <!-- Warning triangle -->
+  <polygon points="16,8 12,14 20,14" fill="#f59e0b" stroke="#d97706" stroke-width="0.5"/>
+
+  <!-- Exclamation mark -->
+  <rect x="15.5" y="10" width="1" height="2" fill="#92400e"/>
+  <circle cx="16" cy="13" r="0.5" fill="#92400e"/>
+</svg>

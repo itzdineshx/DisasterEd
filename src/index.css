@@ -2,112 +2,179 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Note: @tailwind and @apply directives are Tailwind CSS syntax.
+   If you see "Unknown at rule" warnings in your editor, you can disable CSS validation
+   by adding this to .vscode/settings.json:
+   {
+     "css.validate": false,
+     "files.associations": { "*.css": "tailwindcss" }
+   }
+ */
+
 @layer base {
   :root {
-    /* Base colors */
+    /* Enhanced Base Colors - Disaster Preparedness Theme */
     --background: 0 0% 100%;
-    --foreground: 220 16% 22%;
+    --foreground: 222 84% 4.9%;
 
-    /* Emergency & Safety Theme */
-    --primary: 220 100% 40%;        /* Trust Blue */
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 220 100% 60%;
+    /* Primary - Trust & Authority (Deep Blue) */
+    --primary: 221 83% 53%;
+    --primary-foreground: 210 40% 98%;
+    --primary-hover: 221 83% 45%;
+    --primary-glow: 221 83% 65%;
 
-    --emergency: 0 85% 55%;          /* Alert Red */
+    /* Emergency - Alert & Action (Vibrant Red) */
+    --emergency: 0 84% 60%;
     --emergency-foreground: 0 0% 100%;
-    
-    --warning: 35 100% 50%;          /* Warning Orange */
-    --warning-foreground: 0 0% 100%;
-    
-    --safe: 140 60% 45%;             /* Safety Green */
-    --safe-foreground: 0 0% 100%;
+    --emergency-hover: 0 84% 55%;
+    --emergency-glow: 0 84% 70%;
 
-    --secondary: 220 15% 95%;
-    --secondary-foreground: 220 16% 22%;
+    /* Warning - Caution (Amber Orange) */
+    --warning: 38 92% 50%;
+    --warning-foreground: 48 96% 89%;
+    --warning-hover: 38 92% 45%;
 
-    --muted: 220 13% 91%;
-    --muted-foreground: 220 9% 46%;
+    /* Safe - Success & Security (Forest Green) */
+    --safe: 142 76% 36%;
+    --safe-foreground: 355 100% 97%;
+    --safe-hover: 142 76% 32%;
 
-    --accent: 220 15% 95%;
-    --accent-foreground: 220 16% 22%;
+    /* Neutral Colors */
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 84% 4.9%;
+    --secondary-hover: 210 40% 92%;
 
-    --destructive: 0 85% 55%;
-    --destructive-foreground: 0 0% 100%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --border: 220 13% 91%;
-    --input: 220 13% 91%;
-    --ring: 220 100% 40%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 84% 4.9%;
+    --accent-hover: 210 40% 92%;
 
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    /* UI Elements */
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 221 83% 53%;
+    --ring-offset: 210 40% 98%;
+
+    /* Cards & Surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 220 16% 22%;
+    --card-foreground: 222 84% 4.9%;
+    --card-hover: 210 40% 98%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 16% 22%;
+    --popover-foreground: 222 84% 4.9%;
 
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 222 84% 4.9%;
+    --sidebar-primary: 221 83% 53%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 210 40% 96%;
+    --sidebar-accent-foreground: 222 84% 4.9%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 221 83% 53%;
+
+    /* Border Radius */
     --radius: 0.75rem;
 
-    /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(35 100% 60%));
-    --gradient-safe: linear-gradient(135deg, hsl(var(--safe)), hsl(140 60% 60%));
+    /* Enhanced Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(var(--emergency-glow)));
+    --gradient-warning: linear-gradient(135deg, hsl(var(--warning)), hsl(38 92% 60%));
+    --gradient-safe: linear-gradient(135deg, hsl(var(--safe)), hsl(142 76% 45%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)), hsl(221 83% 40%));
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card-hover)));
 
-    /* Shadows */
-    --shadow-card: 0 4px 16px -4px hsl(var(--primary) / 0.1);
-    --shadow-emergency: 0 4px 16px -4px hsl(var(--emergency) / 0.2);
+    /* Enhanced Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
+    --shadow: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.1), 0 2px 4px -2px hsl(0 0% 0% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.1), 0 8px 10px -6px hsl(0 0% 0% / 0.1);
     --shadow-glow: 0 0 40px hsl(var(--primary-glow) / 0.3);
+    --shadow-emergency: 0 0 20px hsl(var(--emergency) / 0.4);
 
     /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 220 16% 22%;
-    --foreground: 0 0% 100%;
+    /* Enhanced Dark Theme - Disaster Preparedness */
+    --background: 222 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 220 16% 22%;
-    --card-foreground: 0 0% 100%;
+    /* Cards & Surfaces */
+    --card: 222 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --card-hover: 217 33% 17%;
 
-    --popover: 220 16% 22%;
-    --popover-foreground: 0 0% 100%;
+    --popover: 222 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 220 100% 60%;
-    --primary-foreground: 220 16% 22%;
-    --primary-glow: 220 100% 70%;
+    /* Primary - Enhanced for dark mode */
+    --primary: 217 91% 60%;
+    --primary-foreground: 222 84% 4.9%;
+    --primary-hover: 217 91% 55%;
+    --primary-glow: 217 91% 70%;
 
-    --secondary: 220 16% 15%;
-    --secondary-foreground: 0 0% 100%;
+    /* Emergency - Maintained visibility in dark mode */
+    --emergency: 0 84% 65%;
+    --emergency-foreground: 0 0% 100%;
+    --emergency-hover: 0 84% 60%;
+    --emergency-glow: 0 84% 75%;
 
-    --muted: 220 16% 15%;
-    --muted-foreground: 220 9% 65%;
+    /* Warning - Adjusted for dark backgrounds */
+    --warning: 38 92% 55%;
+    --warning-foreground: 48 96% 89%;
+    --warning-hover: 38 92% 50%;
 
-    --accent: 220 16% 15%;
-    --accent-foreground: 0 0% 100%;
+    /* Safe - Enhanced contrast */
+    --safe: 142 76% 45%;
+    --safe-foreground: 355 100% 97%;
+    --safe-hover: 142 76% 40%;
 
-    --destructive: 0 85% 55%;
-    --destructive-foreground: 0 0% 100%;
+    /* Neutral Colors - Dark theme */
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+    --secondary-hover: 217 33% 20%;
 
-    --border: 220 16% 15%;
-    --input: 220 16% 15%;
-    --ring: 220 100% 60%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --accent: 217 33% 17%;
+    --accent-foreground: 210 40% 98%;
+    --accent-hover: 217 33% 20%;
+
+    /* UI Elements */
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
+
+    /* Sidebar - Dark theme */
+    --sidebar-background: 222 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 222 84% 4.9%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 217 91% 60%;
+
+    /* Enhanced Gradients for Dark Mode */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-emergency: linear-gradient(135deg, hsl(var(--emergency)), hsl(var(--emergency-glow)));
+    --gradient-warning: linear-gradient(135deg, hsl(var(--warning)), hsl(38 92% 65%));
+    --gradient-safe: linear-gradient(135deg, hsl(var(--safe)), hsl(142 76% 55%));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)), hsl(217 91% 50%));
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(var(--card-hover)));
   }
 }
 
@@ -145,6 +212,64 @@
 
 .story-link {
   @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+}
+
+/* UI Consistency Utilities */
+.page-title {
+  @apply text-3xl font-bold text-foreground;
+}
+
+.page-subtitle {
+  @apply text-muted-foreground mt-1;
+}
+
+.section-title {
+  @apply text-xl font-semibold mb-4;
+}
+
+.card-title-standard {
+  @apply text-xl font-semibold leading-none tracking-tight;
+}
+
+.card-title-small {
+  @apply text-lg font-semibold leading-none tracking-tight;
+}
+
+.card-padding-standard {
+  @apply p-6;
+}
+
+.card-padding-compact {
+  @apply p-4;
+}
+
+.button-icon-standard {
+  @apply h-4 w-4;
+}
+
+.spacing-section {
+  @apply mb-6 sm:mb-8;
+}
+
+.spacing-element {
+  @apply mb-4;
+}
+
+/* Status and color consistency */
+.status-success {
+  @apply text-safe border-safe/30 bg-safe/5;
+}
+
+.status-warning {
+  @apply text-warning border-warning/30 bg-warning/5;
+}
+
+.status-error {
+  @apply text-emergency border-emergency/30 bg-emergency/5;
+}
+
+.status-info {
+  @apply text-primary border-primary/30 bg-primary/5;
 }
 
 /* Mobile optimizations */
@@ -216,13 +341,238 @@
   @apply lg:col-span-2 order-last lg:order-first;
 }
 
-/* Tablet breakpoint improvements */
-@media (min-width: 640px) and (max-width: 1024px) {
-  .tablet-grid {
-    @apply grid-cols-2;
+/* Mobile sidebar improvements */
+@media (max-width: 1023px) {
+  .dashboard-sidebar {
+    @apply mb-8;
   }
   
-  .tablet-text {
-    @apply text-base;
+  .dashboard-sidebar .mobile-card {
+    @apply p-4;
+  }
+  
+  .dashboard-sidebar .mobile-text {
+    @apply text-sm;
   }
 }
+
+/* Enhanced Theme Utilities */
+.theme-gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.theme-gradient-emergency {
+  background: var(--gradient-emergency);
+}
+
+.theme-gradient-safe {
+  background: var(--gradient-safe);
+}
+
+.theme-gradient-warning {
+  background: var(--gradient-warning);
+}
+
+.theme-shadow-glow {
+  box-shadow: var(--shadow-glow);
+}
+
+.theme-shadow-emergency {
+  box-shadow: var(--shadow-emergency);
+}
+
+/* Interactive Elements */
+.btn-primary-enhanced {
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  @apply font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 focus:ring-2 focus:ring-primary focus:ring-offset-2;
+}
+
+.btn-primary-enhanced:hover {
+  background-color: hsl(var(--primary-hover));
+}
+
+.btn-emergency-enhanced {
+  background-color: hsl(var(--emergency));
+  color: hsl(var(--emergency-foreground));
+  @apply font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 focus:ring-2 focus:ring-emergency focus:ring-offset-2;
+}
+
+.btn-emergency-enhanced:hover {
+  background-color: hsl(var(--emergency-hover));
+}
+
+.btn-safe-enhanced {
+  background-color: hsl(var(--safe));
+  color: hsl(var(--safe-foreground));
+  @apply font-medium transition-all duration-200 hover:shadow-lg hover:scale-105 focus:ring-2 focus:ring-safe focus:ring-offset-2;
+}
+
+.btn-safe-enhanced:hover {
+  background-color: hsl(var(--safe-hover));
+}
+
+/* Card Enhancements */
+.card-enhanced {
+  @apply bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200;
+}
+
+.card-emergency {
+  @apply bg-card border rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
+  border-color: hsl(var(--emergency) / 0.2);
+}
+
+.card-emergency:hover {
+  border-color: hsl(var(--emergency) / 0.4);
+}
+
+.card-safe {
+  @apply bg-card border rounded-lg shadow-sm hover:shadow-md transition-all duration-200;
+  border-color: hsl(var(--safe) / 0.2);
+}
+
+.card-safe:hover {
+  border-color: hsl(var(--safe) / 0.4);
+}
+
+/* Status Indicators */
+.status-indicator {
+  @apply inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium;
+}
+
+.status-safe {
+  @apply status-indicator bg-safe/10 text-safe border border-safe/20;
+}
+
+.status-warning {
+  @apply status-indicator bg-warning/10 text-warning border border-warning/20;
+}
+
+.status-emergency {
+  @apply status-indicator bg-emergency/10 text-emergency border border-emergency/20;
+}
+
+/* Animation Enhancements */
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px hsl(var(--primary) / 0.5);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out;
+}
+
+/* Focus and Accessibility */
+.focus-enhanced {
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background;
+}
+
+/* Loading States */
+.loading-shimmer {
+  background: linear-gradient(90deg, transparent, hsl(var(--muted) / 0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Responsive Typography Scale */
+.text-responsive-xs {
+  @apply text-xs sm:text-sm;
+}
+
+.text-responsive-sm {
+  @apply text-sm sm:text-base;
+}
+
+.text-responsive-base {
+  @apply text-base sm:text-lg;
+}
+
+.text-responsive-lg {
+  @apply text-lg sm:text-xl;
+}
+
+.text-responsive-xl {
+  @apply text-xl sm:text-2xl;
+}
+
+.text-responsive-2xl {
+  @apply text-2xl sm:text-3xl;
+}
+
+/* Enhanced Mobile Optimizations */
+@media (max-width: 640px) {
+  .mobile-enhanced {
+    @apply px-4 py-3 rounded-lg border;
+  }
+  
+  .mobile-enhanced .mobile-title {
+    @apply text-lg font-semibold mb-2;
+  }
+  
+  .mobile-enhanced .mobile-content {
+    @apply text-sm text-muted-foreground;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-enhanced {
+    @apply text-black bg-white border border-gray-300;
+  }
+}
+
+/* Ensure dark mode paints the base surfaces consistently. Some components still use
+   explicit bg-white utilities; these can visually break the global dark background.
+   These rules are intentionally specific and use !important sparingly to reduce
+   flash and enforce the global surface tokens when `.dark` is present on <html>. */
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body,
+html.dark #root,
+html.dark #root > div {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* Gently override common "bg-white" utilities inside dark mode so components
+   that still use translucent white surfaces adapt to the dark surface token.
+   We map them to the card surface to retain the intended raised look. */
+html.dark [class*="bg-white"] {
+  background-color: hsl(var(--card)) !important;
+}
+
